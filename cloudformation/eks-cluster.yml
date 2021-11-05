@@ -84,6 +84,6 @@ Outputs:
 
     EKSRoleArn:
         Description: Role for accessing and creating aws resources
-        Value: !GetAtt EKSClusterRole.Arn
+        Value: !GetAtt EKSRole.Arn
         Export:
             Name: !Sub ${EnvironmentName}-EKSRole                  
