@@ -119,11 +119,11 @@ jobs:
           name: Create Node group
           command: |
             aws cloudformation deploy \
-              --template-file cloudformation/eks-nodes.yml \
+              --template-file cloudformation/nodes.yml \
               --stack-name "capstone-eks-nodegroup" \
               --region us-east-1 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" 
-              --parameter-overrides file://cloudformation/eks-node-param.json \
+              --parameter-overrides file://cloudformation/nodes-param.json \
               --tags project=capstone-project
               --no-verify-ssl
                                                                             
