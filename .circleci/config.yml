@@ -161,7 +161,8 @@ jobs:
 workflows:
   default:
     jobs:
-       - build
+       - build:
+           requires: [build]
        - upload-docker:
            requires: [build]
            filters:
