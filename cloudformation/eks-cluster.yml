@@ -12,28 +12,6 @@ Parameters:
         Default: capstone-project
 
 Resources:
-              
-    EKSSecurityGroup:
-        Type: AWS::EC2::SecurityGroup
-        Properties:
-            GroupDescription: Allow http to our load balancer
-            VpcId:
-                Fn::ImportValue:
-                    !Sub "${EnvironmentName}-VPCID"
-            SecurityGroupIngress:
-            - IpProtocol: tcp
-              FromPort: 80
-              ToPort: 80
-              CidrIp: 0.0.0.0/0
-            SecurityGroupEgress:
-            - IpProtocol: tcp
-              FromPort: 80
-              ToPort: 80
-              CidrIp: 0.0.0.0/0
-            Tags: 
-                - Key: Name 
-                  Value: !Sub ${EnvironmentName} CapstoneSecGroup
-
 
     ClusterInstanceProfile:
         Type: AWS::IAM::InstanceProfile
@@ -71,7 +49,7 @@ Resources:
           RoleArn: !GetAtt EKSRole.Arn
           ResourcesVpcConfig:
             SecurityGroupIds:
-              - Fn::ImportValue: !Sub ${EnvironmentName}-SCG
+              - Fn::ImportValue: !Sub ${EnvironmentName}-SecGroup
             SubnetIds:
               Fn::ImportValue: ${EnvironmentName}-PUB-NETS
 

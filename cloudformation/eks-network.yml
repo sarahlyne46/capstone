@@ -137,6 +137,27 @@ Resources:
         Properties:
             RouteTableId: !Ref PublicRouteTable
             SubnetId: !Ref PublicSubnet2
+            
+    EKSSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            GroupDescription: Allow http to our load balancer
+            VpcId:
+                Fn::ImportValue:
+                    !Sub "${EnvironmentName}-VPCID"
+            SecurityGroupIngress:
+            - IpProtocol: tcp
+              FromPort: 80
+              ToPort: 80
+              CidrIp: 0.0.0.0/0
+            SecurityGroupEgress:
+            - IpProtocol: tcp
+              FromPort: 80
+              ToPort: 80
+              CidrIp: 0.0.0.0/0
+            Tags: 
+                - Key: Name 
+                  Value: !Sub ${EnvironmentName}-ESK-SecGorup
 
 
 Outputs: 
@@ -170,3 +191,9 @@ Outputs:
         Value: !Ref PublicSubnet2
         Export:
           Name: !Sub ${EnvironmentName}-PUB2-SN
+          
+    SecurityGroup: 
+        Description: A reference to the public subnet in the 2nd Availability Zone
+        Value: !Ref EKSSecurityGroup
+        Export:
+          Name: !Sub ${EnvironmentName}-SecGroup          
