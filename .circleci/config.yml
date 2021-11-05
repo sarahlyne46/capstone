@@ -98,7 +98,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/eks-network.yml \
-              --stack-name "capstone-eks-network" \
+              --stack-name "capstone-network" \
               --region us-east-1 \
               --parameter-overrides file://cloudformation/eks-network-param.json \
               --tags project=capstone-project
@@ -108,7 +108,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/eks-cluster.yml \
-              --stack-name "capstone-eks-cluster" \
+              --stack-name "capstone-cluster" \
               --region us-east-1 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" 
               --parameter-overrides file://cloudformation/eks-cluster-param.json \
@@ -120,7 +120,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/nodes.yml \
-              --stack-name "capstone-eks-nodegroup" \
+              --stack-name "capstone-nodegroup" \
               --region us-east-1 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" 
               --parameter-overrides file://cloudformation/nodes-param.json \
