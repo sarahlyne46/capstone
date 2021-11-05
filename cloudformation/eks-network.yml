@@ -18,17 +18,17 @@ Parameters:
     VpcCIDR: 
         Description: IP range (CIDR notation) for the VPC
         Type: String
-        Default: 172.30.0.0/16
+        Default: 10.0.0.0/16
 
     PublicSubnet1CIDR:
         Description: IP range (CIDR notation) for the public subnet in the first Availability Zone
         Type: String
-        Default: 172.30.0.0/24
+        Default: 10.0.0.0/24
 
     PublicSubnet2CIDR:
         Description: IP range (CIDR notation) for the public subnet in the second Availability Zone
         Type: String
-        Default: 172.30.1.0/24
+        Default: 10.0.1.0/24
 
 
 Resources: 
@@ -37,6 +37,7 @@ Resources:
         Type: AWS::EC2::VPC
         Properties:
             CidrBlock: !Ref VpcCIDR
+            EnableDnsSupport: true
             EnableDnsHostnames: true
             Tags: 
                 - Key: Name 
@@ -99,7 +100,7 @@ Resources:
             SubnetId: !Ref PublicSubnet1
             Tags: 
                 - Key: Name 
-                  Value: !Sub ${EnvironmentName} NatGateway1
+                  Value: !Sub ${EnvironmentName}-NatGateway1
 
     NatGateway2: 
         Type: AWS::EC2::NatGateway
@@ -108,7 +109,7 @@ Resources:
             SubnetId: !Ref PublicSubnet2
             Tags: 
                 - Key: Name 
-                  Value: !Sub ${EnvironmentName} NatGateway2
+                  Value: !Sub ${EnvironmentName}-NatGateway2
 
     PublicRouteTable:
         Type: AWS::EC2::RouteTable
@@ -116,7 +117,7 @@ Resources:
             VpcId: !Ref VPC
             Tags: 
                 - Key: Name 
-                  Value: !Sub ${EnvironmentName} Public Routes
+                  Value: !Sub ${EnvironmentName}-Public-Routes
 
     DefaultPublicRoute: 
         Type: AWS::EC2::Route
@@ -142,9 +143,7 @@ Resources:
         Type: AWS::EC2::SecurityGroup
         Properties:
             GroupDescription: Allow http to our load balancer
-            VpcId:
-                Fn::ImportValue:
-                    !Sub "${EnvironmentName}-VPC"
+            VpcId: !Ref VPC
             SecurityGroupIngress:
             - IpProtocol: tcp
               FromPort: 80
