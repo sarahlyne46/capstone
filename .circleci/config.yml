@@ -162,15 +162,17 @@ workflows:
     jobs:
        - build
        - upload-docker
-          requires:
-            - build
-          filters:
-            branches:
-              only: [ main ]            
+           requires:
+             - build
+           filters:
+             branches:
+               only: [main]            
        - deploy-infrastructure
+           requires:
+             - upload-docker       
           filters:
             branches:
-              only: [ main ]           
+              only: [main]           
 #       - configure-infrastructure
 #       - deploy-code
 #       - test
