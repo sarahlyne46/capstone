@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# create blank Makefile
+# create blank Makefile and associated requirements file
 touch Makefile
+touch requirements.txt
 
 #c create blank Dockerfile
 touch Dockerfile
