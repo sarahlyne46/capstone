@@ -99,8 +99,8 @@ jobs:
             aws cloudformation deploy \
               --template-file cloudformation/eks-network.yml \
               --stack-name "capstone-eks-network" \
-              --region us-east-1
-              --parameter-overrides file://cloudformation/eks-network-param.json
+              --region us-east-1 \
+              --parameter-overrides file://cloudformation/eks-network-param.json \
               --tags project=capstone-project
 
       - run:
@@ -109,8 +109,8 @@ jobs:
             aws cloudformation deploy \
               --template-file cloudformation/eks-cluster.yml \
               --stack-name "capstone-eks-network" \
-              --region us-east-1
-              --parameter-overrides file://cloudformation/eks-cluster-param.json
+              --region us-east-1 \
+              --parameter-overrides file://cloudformation/eks-cluster-param.json \
               --tags project=capstone-project
                                       
                    
