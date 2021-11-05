@@ -114,7 +114,19 @@ jobs:
               --parameter-overrides file://cloudformation/eks-cluster-param.json \
               --tags project=capstone-project
               --no-verify-ssl
-                                      
+
+      - run:
+          name: Create Node group
+          command: |
+            aws cloudformation deploy \
+              --template-file cloudformation/nodes.yml \
+              --stack-name "capstone-eks-nodegroup" \
+              --region us-east-1 \
+              --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" 
+              --parameter-overrides file://cloudformation/nodes-param.json \
+              --tags project=capstone-project
+              --no-verify-ssl
+                                                                            
                    
 #  configure-infrastructure:
 #    docker:
