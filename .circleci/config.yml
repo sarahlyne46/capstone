@@ -53,7 +53,10 @@ jobs:
 
   upload-docker:
     docker:
-      - image: xxx
+      - image: circleci/golang:1.15
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
 
     working_directory: ~/repo
 
@@ -111,54 +114,53 @@ jobs:
               --tags project=capstone-project
                                       
                    
-  configure-infrastructure:
-    docker:
-      - image: xxx
-
-    working_directory: ~/repo
-
-    steps:
-      - checkout
-      # Deploy code
-      - run:
-          name: configure
-
-  configure-kubernetes:
-    docker:
-      - image: xxx
-
-    working_directory: ~/repo
-
-    steps:
-      - checkout
-      # Deploy code
-      - run:
-          name: configure
-
-  deploy-code:
-    docker:
-      - image: xxx
-
-    working_directory: ~/repo
-
-    steps:
-      - checkout
-      # Deploy code
-      - run:
-          name: Deploy new webpage      
-
-
-  test:
-      # Test deployments
-      - run:
-          name: Testing
-
-
+#  configure-infrastructure:
+#    docker:
+#      - image: xxx
+#
+#    working_directory: ~/repo
+#
+#    steps:
+#      - checkout
+#      # Deploy code
+#      - run:
+#          name: configure
+#
+#  configure-kubernetes:
+#    docker:
+#      - image: xxx
+#
+#    working_directory: ~/repo
+#
+#    steps:
+#      - checkout
+#      # Deploy code
+#      - run:
+#          name: configure
+#
+#  deploy-code:
+#    docker:
+#      - image: xxx
+#
+#    working_directory: ~/repo
+#
+#    steps:
+#      - checkout
+#      # Deploy code
+#      - run:
+#          name: Deploy new webpage      
+#
+#
+#  test:
+#      # Test deployments
+#      - run:
+#          name: Testing
+#
+#
 workflows:
   default:
     jobs:
        - build
-#       - lint
        - upload-docker
        - deploy-infrastructure
 #       - configure-infrastructure
