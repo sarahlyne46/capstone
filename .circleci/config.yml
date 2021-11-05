@@ -1,0 +1,166 @@
+version: 2.1
+
+#orbs:
+#  aws-cli: circleci/aws-cli@2.0.3
+#  slack: circleci/slack@4.2.1
+
+parameters:
+  DOCKER_PATH:
+    type: string
+    default: "sarahlyne46/capstone"
+  DOCKER_IMAGE_NAME:
+    type: string
+    default: "capstone"
+
+jobs:
+  build:
+    docker:
+      - image: python:3.7.3-stretch
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "requirements.txt" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            make install
+
+      - run:
+          name: Install hadolint
+          command: |
+            wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64 && chmod +x /bin/hadolint
+
+      - run:
+          name: run lint
+          command: |
+            . venv/bin/activate
+            make lint   
+
+      - save_cache:
+          paths:
+            - ./venv
+          key: v1-dependencies-{{ checksum "requirements.txt" }}
+
+
+  upload-docker:
+    docker:
+      - image: xxx
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      
+      - setup_remote_docker:
+          version: 19.03.13
+
+      - run:
+          name: Build docker container
+          command: |
+            docker build --tag=$DOCKER_IMAGE_NAME .
+            docker image ls
+      
+      - run:
+          name: Upload Docker
+          command: |
+            echo "Docker ID and Image: $DOCKER_IMAGE_NAME"
+            docker login -u="$DOCKERHUB_USERNAME" -p="$DOCKERHUB_PASSWORD"
+            docker tag $DOCKER_IMAGE_NAME $DOCKER_PATH:$CIRCLE_WORKFLOW_ID
+            docker push $DOCKER_PATH:$CIRCLE_WORKFLOW_ID
+ 
+
+  deploy-infrastructure:
+
+    docker:
+      - image: amazon/aws-cli
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install dependencies
+          command: yum install -y tar gzip
+
+      - run:
+          name: Create EKS Network
+          command: |
+            aws cloudformation deploy \
+              --template-file cloudformation/eks_network.yml \
+              --stack-name "capstone-eks-network" \
+              --region us-east-1
+              --parameter-overrides file://cloudformation/eks-network-param.json
+              --tags project=capstone-project
+
+      - run:
+          name: Create EKS Cluster
+          command: |
+            aws cloudformation deploy \
+              --template-file cloudformation/eks_cluster.yml \
+              --stack-name "capstone-eks-network" \
+              --region us-east-1
+              --parameter-overrides file://cloudformation/eks-cluster-param.json
+              --tags project=capstone-project
+                                      
+                   
+  configure-infrastructure:
+    docker:
+      - image: xxx
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      # Deploy code
+      - run:
+          name: configure
+
+  configure-kubernetes:
+    docker:
+      - image: xxx
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      # Deploy code
+      - run:
+          name: configure
+
+  deploy-code:
+    docker:
+      - image: xxx
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      # Deploy code
+      - run:
+          name: Deploy new webpage      
+
+
+  test:
+      # Test deployments
+      - run:
+          name: Testing
+
+
+workflows:
+  default:
+    jobs:
+       - build
+#       - lint
+       - upload-docker
+       - deploy-infrastructure
+#       - configure-infrastructure
+#       - deploy-code
+#       - test
