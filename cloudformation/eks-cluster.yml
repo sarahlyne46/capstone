@@ -78,7 +78,7 @@ Resources:
 Outputs:
     EksId:
         Description: EKS id
-        Value: !Ref CapstoneProjectCluster
+        Value: !Ref EKSCluster
         Export:
             Name: !Sub ${EnvironmentName}-EKSCluster
 
