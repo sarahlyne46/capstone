@@ -157,7 +157,7 @@ Resources:
               CidrIp: 0.0.0.0/0
             Tags: 
                 - Key: Name 
-                  Value: !Sub ${EnvironmentName}-ESK-SecGorup
+                  Value: !Sub ${EnvironmentName}-SecGroup
 
 
 Outputs: 
