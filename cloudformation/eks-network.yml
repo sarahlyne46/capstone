@@ -144,7 +144,7 @@ Resources:
             GroupDescription: Allow http to our load balancer
             VpcId:
                 Fn::ImportValue:
-                    !Sub "${EnvironmentName}-VPCID"
+                    !Sub "${EnvironmentName}-VPC"
             SecurityGroupIngress:
             - IpProtocol: tcp
               FromPort: 80
