@@ -157,16 +157,17 @@ jobs:
 #          name: Testing
 #
 #
+
 workflows:
   default:
     jobs:
        - build
-       - upload-docker
+       - upload-docker:
            requires: [build]
            filters:
              branches:
                only: [main]            
-       - deploy-infrastructure
+       - deploy-infrastructure:
            requires: [upload-docker]       
            filters:
             branches:
