@@ -51,7 +51,7 @@ Resources:
             SecurityGroupIds:
               - Fn::ImportValue: !Sub ${EnvironmentName}-SecGroup
             SubnetIds:
-              Fn::ImportValue: ${EnvironmentName}-PUB-NETS
+              Fn::ImportValue: !Sub ${EnvironmentName}-PUB-NETS
 
 Outputs:
     EksId:
