@@ -18,17 +18,17 @@ Parameters:
     VpcCIDR: 
         Description: IP range (CIDR notation) for the VPC
         Type: String
-        Default: 10.0.0.0/16
+        Default: 172.30.0.0/16
 
     PublicSubnet1CIDR:
         Description: IP range (CIDR notation) for the public subnet in the first Availability Zone
         Type: String
-        Default: 10.0.0.0/24
+        Default: 172.30.0.0/24
 
     PublicSubnet2CIDR:
         Description: IP range (CIDR notation) for the public subnet in the second Availability Zone
         Type: String
-        Default: 10.0.1.0/24
+        Default: 172.30.1.0/24
 
 
 Resources: 
@@ -166,7 +166,7 @@ Outputs:
         Description: A reference to the created VPC
         Value: !Ref VPC
         Export:
-          Name: !Sub ${EnvironmentName}-VPCID
+          Name: !Sub ${EnvironmentName}-VPC
 
     VPCPublicRouteTable:
         Description: Public Routing
