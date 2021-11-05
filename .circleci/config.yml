@@ -97,7 +97,7 @@ jobs:
           name: Create EKS Network
           command: |
             aws cloudformation deploy \
-              --template-file cloudformation/eks_network.yml \
+              --template-file cloudformation/eks-network.yml \
               --stack-name "capstone-eks-network" \
               --region us-east-1
               --parameter-overrides file://cloudformation/eks-network-param.json
@@ -107,7 +107,7 @@ jobs:
           name: Create EKS Cluster
           command: |
             aws cloudformation deploy \
-              --template-file cloudformation/eks_cluster.yml \
+              --template-file cloudformation/eks-cluster.yml \
               --stack-name "capstone-eks-network" \
               --region us-east-1
               --parameter-overrides file://cloudformation/eks-cluster-param.json
@@ -162,7 +162,15 @@ workflows:
     jobs:
        - build
        - upload-docker
+          requires:
+            - build
+          filters:
+            branches:
+              only: [ main ]            
        - deploy-infrastructure
+          filters:
+            branches:
+              only: [ main ]           
 #       - configure-infrastructure
 #       - deploy-code
 #       - test
