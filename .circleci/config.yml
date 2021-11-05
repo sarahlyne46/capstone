@@ -102,8 +102,6 @@ jobs:
               --region us-east-1 \
               --parameter-overrides file://cloudformation/eks-network-param.json \
               --tags project=capstone-project
-              --no-verify-ssl
-              --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" 
 
       - run:
           name: Create EKS Cluster
