@@ -86,12 +86,19 @@ Resources:
         DependsOn: InternetGatewayAttachment
         Properties: 
             Domain: vpc
+            Tags:
+                - Key: Name
+                  Value: !Ref EnvironmentName
 
     NatGateway2EIP:
         Type: AWS::EC2::EIP
         DependsOn: InternetGatewayAttachment
         Properties:
             Domain: vpc
+            Tags:
+                - Key: Name
+                  Value: !Ref EnvironmentName
+
 
     NatGateway1: 
         Type: AWS::EC2::NatGateway
