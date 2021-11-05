@@ -110,8 +110,10 @@ jobs:
               --template-file cloudformation/eks-cluster.yml \
               --stack-name "capstone-eks-network" \
               --region us-east-1 \
+              --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" 
               --parameter-overrides file://cloudformation/eks-cluster-param.json \
               --tags project=capstone-project
+              --no-verify-ssl
                                       
                    
 #  configure-infrastructure:
