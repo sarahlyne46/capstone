@@ -105,6 +105,7 @@ jobs:
 
       - run:
           name: Create EKS Cluster
+          no_output_timeout: 30m          
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/eks-cluster.yml \
