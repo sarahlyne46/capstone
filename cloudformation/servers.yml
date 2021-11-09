@@ -49,51 +49,35 @@ Resources:
         - Key: Project
           Value: !Ref EnvironmentName
 
-  BlueBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: !Sub "sl-capstone-blue"
-      AccessControl: PublicRead
-      WebsiteConfiguration:
-        IndexDocument: index.html
 
-  GreenBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: !Sub "sl-capstone-green"
-      AccessControl: PublicRead
-      WebsiteConfiguration:
-        IndexDocument: index.html
-
-  BlueBucketPolicy:
+  WebBucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
-      Bucket: !Ref 'BlueBucket'
+      Bucket: !Ref 'WebBucket'
       PolicyDocument:
         Statement:
         - Sid: PublicReadForGetBucketObjects
           Effect: Allow
           Principal: '*'
           Action: s3:GetObject
-          Resource: !Join ['', ['arn:aws:s3:::sl-capstone-blue', !Ref 'BlueBucket', /*]]
+          Resource: !Join ['', ['arn:aws:s3:::', !Ref 'WebsiteBucket', /*]]
 
-  GreenBucketPolicy:
-    Type: AWS::S3::BucketPolicy
+  WebsiteBucket:
+    Type: AWS::S3::Bucket
     Properties:
-      Bucket: !Ref 'GreenBucket'
-      PolicyDocument:
-        Statement:
-        - Sid: PublicReadForGetBucketObjects
-          Effect: Allow
-          Principal: '*'
-          Action: s3:GetObject
-          Resource: !Join ['', ['arn:aws:s3:::sl-capstone-green', !Ref 'GreenBucket', /*]]
+      BucketName: !Sub "sl-capstone-website"
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+  
 
 
 Outputs:
-  BlueURL:
-    Value: !GetAtt BlueBucket.WebsiteURL
-    Description: URL for website hosted on S3        
-  GreenURL:
-    Value: !GetAtt GreenBucket.WebsiteURL
-    Description: URL for website hosted on S3        
+  WebsiteURL:
+    Value: !GetAtt WebsiteBucket.WebsiteURL
+    Description: URL for website hosted on S3
+
+Outputs:
+  WebsiteURL:
+    Value: !GetAtt WebsiteBucket.WebsiteURL
+    Description: URL for website hosted on S3      
