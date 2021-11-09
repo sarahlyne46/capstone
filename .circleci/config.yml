@@ -178,14 +178,13 @@ jobs:
       - run:
           name: check inventory file
           command: |
-            cat inventory.txt
+            cat ~/inventory.txt
       - run:
           name: configure server
           no_output_timeout: 30m
           command: |
-            cp inventory.txt .circleci/ansible/
             cd .circleci/ansible
-            ansible-playbook -vvv -i inventory.txt configure-server.yml 
+            ansible-playbook -vvv -i ~/inventory.txt configure-server.yml 
 
 #  configure-cluster:
 #    docker:
