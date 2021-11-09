@@ -1,16 +1,11 @@
 Description: >
-  Capstone webservers.
-
-Parameters:
-  ID:
-    Description: Unique identifier.
-    Type: String
+  Capstone webservers
 
 Resources:
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupName: !Sub Webservers-${ID}
+      GroupName: !Sub Webservers
       GroupDescription: Allow port 22
       SecurityGroupIngress:
         - IpProtocol: tcp
