@@ -111,9 +111,9 @@ jobs:
               --template-file cloudformation/eks-cluster.yml \
               --stack-name "capstone-cluster" \
               --region us-east-1 \
-              --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" 
+              --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/eks-cluster-param.json \
-              --tags project=capstone-project
+              --tags project=capstone-project \
               --no-verify-ssl
 
       - run:
@@ -123,9 +123,9 @@ jobs:
               --template-file cloudformation/nodes.yml \
               --stack-name "capstone-nodegroup" \
               --region us-east-1 \
-              --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" 
+              --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/nodes-param.json \
-              --tags project=capstone-project
+              --tags project=capstone-project \
               --no-verify-ssl
                                                                             
                    
