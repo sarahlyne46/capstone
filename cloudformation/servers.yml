@@ -21,7 +21,7 @@ Resources:
           CidrIp: 0.0.0.0/0
           
 
-  EC2Instance:
+  EC2Instance-blue:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t2.micro
