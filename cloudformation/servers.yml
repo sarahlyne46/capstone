@@ -1,0 +1,97 @@
+Description: >
+  Capstone webservers.
+
+Parameters:
+  ID:
+    Description: Unique identifier.
+    Type: String
+
+Resources:
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Sub Webservers-${ID}
+      GroupDescription: Allow port 22
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+          
+
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      SecurityGroups:
+        - Ref: InstanceSecurityGroup
+      KeyName: udacity 
+      ImageId: ami-01cc34ab2709337aa    # Linux 2 in region us-east-1
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-blue
+        - Key: Project
+          Value: !Ref EnvironmentName
+
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      SecurityGroups:
+        - Ref: InstanceSecurityGroup
+      KeyName: udacity 
+      ImageId: ami-01cc34ab2709337aa    # Linux 2 in region us-east-1
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-green
+        - Key: Project
+          Value: !Ref EnvironmentName
+
+  BlueBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "sl-capstone-blue"
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+
+  GreenBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "sl-capstone-green"
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+
+  BlueBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref 'BlueBucket'
+      PolicyDocument:
+        Statement:
+        - Sid: PublicReadForGetBucketObjects
+          Effect: Allow
+          Principal: '*'
+          Action: s3:GetObject
+          Resource: !Join ['', ['arn:aws:s3:::sl-capstone-blue', !Ref 'BlueBucket', /*]]
+
+  GreenBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref 'GreenBucket'
+      PolicyDocument:
+        Statement:
+        - Sid: PublicReadForGetBucketObjects
+          Effect: Allow
+          Principal: '*'
+          Action: s3:GetObject
+          Resource: !Join ['', ['arn:aws:s3:::sl-capstone-green', !Ref 'GreenBucket', /*]]
+
+
+Outputs:
+  BlueURL:
+    Value: !GetAtt BlueBucket.WebsiteURL
+    Description: URL for website hosted on S3        
+  GreenURL:
+    Value: !GetAtt GreenBucket.WebsiteURL
+    Description: URL for website hosted on S3        

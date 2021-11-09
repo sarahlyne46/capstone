@@ -128,7 +128,35 @@ jobs:
               --tags project=capstone-project \
               --no-verify-ssl
                                                                             
-                   
+      - run:
+          name: Ensure server instances exists
+          command: |
+            aws cloudformation deploy \
+              --template-file cloudformation/servers.yml \
+              --tags project=${ENVIRONMENT_NAME}-project \
+              --stack-name "${ENVIRONMENT_NAME}-eks-servers" \
+              --region ${AWS_DEFAULT_REGION} \
+              --parameter-overrides file://cloudformation/servers-parameters.json \
+              --output text >> ~/servers.txt
+            cat ~/servers.txt
+
+      - run:
+          name: Get IP Addresses names
+          command: |
+            echo [management] > ~/inventory.txt
+            aws ec2 describe-instances \
+              --region "${AWS_DEFAULT_REGION}" \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters "Name=tag:Name,Values=${ENVIRONMENT_NAME}-management*" \
+              --output text >> ~/inventory.txt
+            cat ~/inventory.txt
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - inventory.txt
+            - servers.txt                   
+
+
 #  configure-infrastructure:
 #    docker:
 #      - image: xxx
