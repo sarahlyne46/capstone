@@ -183,8 +183,15 @@ jobs:
           name: configure server
           no_output_timeout: 30m
           command: |
-            cd .circleci/ansible
-            ansible-playbook -vvv -i ~/inventory.txt configure-server.yml 
+            if grep -q "No changes to deploy" ~/servers.txt
+              then
+                cat ~/inventory.txt
+                echo "Our management instances are already configured."
+              else
+                cat ~/inventory.txt
+                cd ansible
+                ansible-playbook -i ~/inventory.txt configure-server.yml
+              fi
 
 #  configure-cluster:
 #    docker:
