@@ -145,11 +145,11 @@ jobs:
       - run:
           name: Get IP Addresses names
           command: |
-            echo [management] > ~/inventory.txt
+            echo [webserver] > ~/inventory.txt
             aws ec2 describe-instances \
-              --region "${AWS_DEFAULT_REGION}" \
+              --region us-east-1 \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=tag:Name,Values=capstone-servers*" \
+              --filters "Name=tag:Name,Values=capstone-project*" \
               --output text >> ~/inventory.txt
             cat ~/inventory.txt
       - persist_to_workspace:
