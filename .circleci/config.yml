@@ -266,10 +266,14 @@ workflows:
              branches:
                only: [main]            
        - deploy-infrastructure:
-           requires: [upload-docker]       
            filters:
             branches:
               only: [main]           
-#       - configure-infrastructure
+       - configure-infrastructure:
+           requires: [deploy-infrastructure]
+           filters:
+             branches:
+               only: [main]            
+#       - configure-cluster:
 #       - deploy-code
 #       - test
