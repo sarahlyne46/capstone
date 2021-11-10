@@ -183,6 +183,7 @@ jobs:
           name: configure server
           no_output_timeout: 30m
           command: |
+            cat ~/servers.txt
             if grep -q "No changes to deploy" ~/servers.txt
               then
                 cat ~/inventory.txt
@@ -220,7 +221,7 @@ jobs:
              echo $PWD
              cd .circleci/ansible
              echo $PWD
-             ansible-playbook -i ~/inventory.txt ~/configure-cluster.yml
+             ansible-playbook -i ~/inventory.txt configure-cluster.yml
               
   deploy-blue:
     docker:
