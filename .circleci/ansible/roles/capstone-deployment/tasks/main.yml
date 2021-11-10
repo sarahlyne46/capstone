@@ -1,0 +1,9 @@
+- name: Copy deployment configuration
+  copy:
+    src: "app-blue.yaml"
+    dest: $HOME
+
+- name: Apply deployment configuration
+  shell: "./bin/kubectl apply -f app-blue.yaml"
+  args:
+    chdir: $HOME
