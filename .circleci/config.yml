@@ -300,7 +300,7 @@ workflows:
            filters:
              branches:
                only: [main]      
-        - deploy-blue:
+       - deploy-blue:
            requires: [configure-cluster]
            filters:
              branches:
