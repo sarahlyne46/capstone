@@ -218,6 +218,8 @@ jobs:
           no_output_timeout: 30m
           command: |
              echo $PWD
+             cd .circleci/ansible
+             echo $PWD
              ansible-playbook -i ~/inventory.txt ~/configure-cluster.yml
               
   deploy-blue:
