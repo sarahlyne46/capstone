@@ -1,19 +1,12 @@
 ---
-- name: "Install dependencies"
-  hosts: webserver
-  user: linux
-  gather_facts: false
-  become: yes
-
-  roles:
-    - install-kubectl
-
-- name: "Fetch kubectl config"
+- name: "Deploy EKS"
   hosts: webserver
   user: linux
   gather_facts: false
   become: yes
   vars:
-  pre_tasks:
-    - name: Create a kubeconfig file for the cluster
-      shell: "aws eks update-kubeconfig --region us-east-1 --name capstone-cluster"
+    ENVIRONMENT_NAME: "{{ lookup('env', 'ENVIRONMENT_NAME') }}"
+ 
+  roles:
+    - capstone-deployment
+    - capstone-service
