@@ -3,10 +3,10 @@
 # Download kubernetes & install
 curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
 chmod +x ./kubectl
-sudo mv ./kubectl /usr/local/bin/kubectl
-sudo apt-get update && sudo apt-get install docker.io -y
+mv ./kubectl /usr/local/bin/kubectl
+apt-get update && apt-get install docker.io -y
 
 
 
 # confirm docker version
-sudo apt-get update && sudo apt-get install docker.io -y
+apt-get update && apt-get install docker.io -y
