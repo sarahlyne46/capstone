@@ -217,8 +217,8 @@ jobs:
           name: configure server
           no_output_timeout: 30m
           command: |
-             cat ~/inventory.txt
-             ansible-playbook -i ~/inventory.txt configure-cluster.yml
+             echo $PWD
+             ansible-playbook -i ~/inventory.txt ~/configure-cluster.yml
               
   deploy-blue:
     docker:
