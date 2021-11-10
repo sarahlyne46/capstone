@@ -217,15 +217,9 @@ jobs:
           name: configure server
           no_output_timeout: 30m
           command: |
-            if grep -q "No changes to deploy" ~/servers.txt
-              then
-                cat ~/inventory.txt
-                echo "Our management instances are already configured."
-              else
-                cat ~/inventory.txt
-                cd ansible
-                ansible-playbook -i ~/inventory.txt configure-server.yml
-              fi
+             cat ~/inventory.txt
+             cd ansible
+             ansible-playbook -i ~/inventory.txt configure-cluster.yml
               
   deploy-blue:
     docker:
