@@ -218,7 +218,6 @@ jobs:
           no_output_timeout: 30m
           command: |
              cat ~/inventory.txt
-             cd ansible
              ansible-playbook -i ~/inventory.txt configure-cluster.yml
               
   deploy-blue:
