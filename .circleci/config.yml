@@ -183,6 +183,7 @@ jobs:
           name: configure server
           no_output_timeout: 30m
           command: |
+            cat ~/servers.txt
             if grep -q "No changes to deploy" ~/servers.txt
               then
                 cat ~/inventory.txt
@@ -193,39 +194,49 @@ jobs:
                 ansible-playbook -i ~/inventory.txt configure-server.yml
               fi
 
-#  configure-cluster:
-#    docker:
-#      - image: python:3.7-alpine3.11
-#    environment:
-#      ANSIBLE_HOST_KEY_CHECKING: "false"      
-#    steps:
-#      - checkout
-#      - add_ssh_keys:
-#          fingerprints: ["94:ae:b0:67:09:ca:49:b8:85:00:08:40:4a:1b:dc:af"]      
-#      - attach_workspace:
-#          at: ~/
-#      - run:
-#          name: Install dependencies
-#          command: |
-#            apk add --update tar gzip ansible nodejs npm curl
-#            pip install awscli
-#      - run:
-#          name: check inventory file
-#          command: |
-#            cat inventory.txt
-#      - run:
-#          name: configure server
-#          no_output_timeout: 30m
-#          command: |
-#            cp inventory.txt .circleci/ansible/
-#            cd .circleci/ansible
-#            ansible-playbook -vvv -i inventory.txt configure-cluster.yml
+  configure-cluster:
+    docker:
+      - image: python:3.7-alpine3.11
+    environment:
+      ANSIBLE_HOST_KEY_CHECKING: "false"      
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["94:ae:b0:67:09:ca:49:b8:85:00:08:40:4a:1b:dc:af"]      
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update tar gzip ansible nodejs npm curl
+            pip install awscli
+      - run:
+          name: check inventory file
+          command: |
+            cat ~/inventory.txt
+      - run:
+          name: configure server
+          no_output_timeout: 30m
+          command: |
+             echo $PWD
+             cd .circleci/ansible
+             echo $PWD
+             ansible-playbook -i ~/inventory.txt configure-cluster.yml
+              
+  deploy-blue:
+    docker:
+      - image: python:3.7-alpine3.11
+    
+    working_directory: ~/kube
+    
+    steps:
+      - checkout
+      # Deploy code
+      - run:
+          name: Deploy Blue version
+          command: |
+            kubectl apply -f app-blue.yaml -f app-service-bg.yaml -f ingress.yaml
 
-#    steps:
-#      - checkout
-#      # Deploy code
-#      - run:
-#          name: configure
 #
 #  configure-kubernetes:
 #    docker:
@@ -280,6 +291,15 @@ workflows:
            filters:
              branches:
                only: [main]            
-#       - configure-cluster:
+       - configure-cluster:
+           requires: [configure-infrastructure]
+           filters:
+             branches:
+               only: [main]      
+       - deploy-blue:
+           requires: [configure-cluster]
+           filters:
+             branches:
+               only: [main]     
 #       - deploy-code
 #       - test

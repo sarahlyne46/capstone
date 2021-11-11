@@ -1,13 +1,18 @@
-#!/usr/bin/env bash
+---
+- name: "Download kubernetes"
+  shell: curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+  args:
+    chdir: $HOME
 
-# Download kubernetes & install
-curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
-chmod +x ./kubectl
-sudo mv ./kubectl /usr/local/bin/kubectl
-sudo apt-get update && sudo apt-get install docker.io -y
+- name: "change properties"
+  shell: chmod +x ./kubectl
+  args:
+    chdir: $HOME
 
+- name: "move kubernetes"
+  shell: mv ./kubectl /usr/local/bin/kubectl
 
-
-# confirm docker version
-docker version
-sudo apt-get update && sudo apt-get install docker.io -y
+- name: "install docker"
+  shell: apt-get update && apt-get install docker.io -y
+  args:
+    chdir: $HOME
