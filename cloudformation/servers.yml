@@ -27,7 +27,7 @@ Resources:
       InstanceType: t2.micro
       SecurityGroups:
         - Ref: InstanceSecurityGroup
-      KeyName: udacity 
+      KeyName: capstone 
       ImageId: ami-020db2c14939a8efb    # ubuntu 18.04 in region us-east-2
       Tags:
         - Key: Name
@@ -41,7 +41,7 @@ Resources:
       InstanceType: t2.micro
       SecurityGroups:
         - Ref: InstanceSecurityGroup
-      KeyName: udacity 
+      KeyName: capstone 
       ImageId: ami-020db2c14939a8efb    # ubuntu 18.04 in region us-east-2
       Tags:
         - Key: Name
