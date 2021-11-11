@@ -98,7 +98,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/eks-network.yml \
-              --stack-name "capstone-network" \
+              --stack-name "cap-network-test" \
               --region us-east-1 \
               --parameter-overrides file://cloudformation/eks-network-param.json \
               --tags project=capstone-project
@@ -109,7 +109,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/eks-cluster.yml \
-              --stack-name "capstone-cluster" \
+              --stack-name "cap-cluster-test" \
               --region us-east-1 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/eks-cluster-param.json \
@@ -121,7 +121,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/nodes.yml \
-              --stack-name "capstone-nodegroup" \
+              --stack-name "cap-nodegroup-test" \
               --region us-east-1 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/nodes-param.json \
@@ -133,7 +133,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/servers.yml \
-              --stack-name "capstone-servers" \
+              --stack-name "cap-servers-test" \
               --region us-east-1 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/servers-param.json \
@@ -167,7 +167,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: ["94:ae:b0:67:09:ca:49:b8:85:00:08:40:4a:1b:dc:af"]      
+          fingerprints: ["27:aa:b7:40:48:1d:b7:c9:e4:a5:7c:55:04:8c:aa:ab:97:b4:6a:09"]      
       - attach_workspace:
           at: ~/
       - run:
@@ -202,7 +202,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: ["94:ae:b0:67:09:ca:49:b8:85:00:08:40:4a:1b:dc:af"]      
+          fingerprints: ["27:aa:b7:40:48:1d:b7:c9:e4:a5:7c:55:04:8c:aa:ab:97:b4:6a:09"]      
       - attach_workspace:
           at: ~/
       - run:
@@ -235,7 +235,7 @@ jobs:
       - run:
           name: Deploy Blue version
           command: |
-            kubectl apply -f app-blue.yaml -f app-service-bg.yaml -f ingress.yaml
+            kubectl apply -f app-blue.yaml -f app-service-bg.yaml
 
 #
 #  configure-kubernetes:
