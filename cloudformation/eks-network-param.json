@@ -1,7 +1,7 @@
 [
     {
         "ParameterKey": "EnvironmentName",
-        "ParameterValue": "capstone-project-test"
+        "ParameterValue": "capstone-project-ubuntu"
     },
     {
         "ParameterKey": "VpcCIDR",
