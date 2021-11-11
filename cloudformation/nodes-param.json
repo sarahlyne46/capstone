@@ -1,5 +1,5 @@
 [
-  "EnvironmentName=capstone-project-test",
+  "EnvironmentName=capstone-project-ubuntu",
   "MinSize=2",
   "MaxSize=6",
   "DesiredSize=4",
