@@ -272,30 +272,30 @@ workflows:
        - build:
            filters:
             branches:
-              only: [sarahlyne46-cap1-ubuntu]   
+              only: [main]   
        - upload-docker:
            requires: [build]
            filters:
              branches:
-               only: [sarahlyne46-cap1-ubuntu]            
+               only: [main]            
        - deploy-infrastructure:
            filters:
             branches:
-              only: [sarahlyne46-cap1-ubuntu]           
+              only: [main]           
        - configure-infrastructure:
            requires: [deploy-infrastructure]
            filters:
              branches:
-               only: [sarahlyne46-cap1-ubuntu]            
+               only: [main]            
        - configure-cluster:
            requires: [configure-infrastructure]
            filters:
              branches:
-               only: [sarahlyne46-cap1-ubuntu]      
+               only: [main]      
        - deploy-blue:
            requires: [configure-cluster]
            filters:
              branches:
-               only: [sarahlyne46-cap1-ubuntu]     
+               only: [main]     
 #       - deploy-code
 #       - test
