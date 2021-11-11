@@ -1,7 +1,9 @@
 version: 2.1
 
-#orbs:
-#  aws-cli: circleci/aws-cli@2.0.3
+orbs:
+  aws-cli: circleci/aws-cli@2.0.3
+  aws-eks: circleci/aws-eks@1.1.0
+  kubernetes: circleci/kubernetes@0.4.0  
 #  slack: circleci/slack@4.2.1
 
 parameters:
@@ -167,7 +169,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: ["27:aa:b7:40:48:1d:b7:c9:e4:a5:7c:55:04:8c:aa:ab:97:b4:6a:09"]      
+          role-arn: arn:aws:iam::970192648262:role/cap-cluster-test-EKSRole-1AIBFWS0ZEV08
       - attach_workspace:
           at: ~/
       - run:
