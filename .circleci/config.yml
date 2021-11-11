@@ -4,7 +4,7 @@ orbs:
   aws-cli: circleci/aws-cli@2.0.3
   aws-eks: circleci/aws-eks@1.1.0
   kubernetes: circleci/kubernetes@0.4.0  
-#  slack: circleci/slack@4.2.1
+#  slack: circleci/slack@4.2.1https://github.com/sarahlyne46/capstone/tree/sarahlyne46-cap1-ubuntu
 
 parameters:
   DOCKER_PATH:
@@ -100,8 +100,8 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/eks-network.yml \
-              --stack-name "cap-network-test" \
-              --region us-east-1 \
+              --stack-name "cap-network-ubuntu" \
+              --region us-east-2 \
               --parameter-overrides file://cloudformation/eks-network-param.json \
               --tags project=capstone-project
 
@@ -111,8 +111,8 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/eks-cluster.yml \
-              --stack-name "cap-cluster-test" \
-              --region us-east-1 \
+              --stack-name "cap-cluster-ubuntu" \
+              --region us-east-2 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/eks-cluster-param.json \
               --tags project=capstone-project \
@@ -123,8 +123,8 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/nodes.yml \
-              --stack-name "cap-nodegroup-test" \
-              --region us-east-1 \
+              --stack-name "cap-nodegroup-ubuntu" \
+              --region us-east-2 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/nodes-param.json \
               --tags project=capstone-project \
@@ -135,8 +135,8 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/servers.yml \
-              --stack-name "cap-servers-test" \
-              --region us-east-1 \
+              --stack-name "cap-servers-ubuntu" \
+              --region us-east-2 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/servers-param.json \
               --tags project=capstone-project \
@@ -149,7 +149,7 @@ jobs:
           command: |
             echo [webserver] > ~/inventory.txt
             aws ec2 describe-instances \
-              --region us-east-1 \
+              --region us-east-2 \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:Name,Values=capstone-project*" \
               --output text >> ~/inventory.txt
@@ -169,7 +169,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          role-arn: arn:aws:iam::970192648262:role/cap-cluster-test-EKSRole-1AIBFWS0ZEV08
+          fingerprints: ["78:a8:3d:8a:cd:bf:35:ce:21:33:ea:c9:e2:9e:bc:70"]
       - attach_workspace:
           at: ~/
       - run:
@@ -198,7 +198,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: ["27:aa:b7:40:48:1d:b7:c9:e4:a5:7c:55:04:8c:aa:ab:97:b4:6a:09"]      
+          fingerprints: ["78:a8:3d:8a:cd:bf:35:ce:21:33:ea:c9:e2:9e:bc:70"]      
       - attach_workspace:
           at: ~/
       - run:
@@ -272,30 +272,30 @@ workflows:
        - build:
            filters:
             branches:
-              only: [main]   
+              only: [sarahlyne46-cap1-ubuntu]   
        - upload-docker:
            requires: [build]
            filters:
              branches:
-               only: [main]            
+               only: [sarahlyne46-cap1-ubuntu]            
        - deploy-infrastructure:
            filters:
             branches:
-              only: [main]           
+              only: [sarahlyne46-cap1-ubuntu]           
        - configure-infrastructure:
            requires: [deploy-infrastructure]
            filters:
              branches:
-               only: [main]            
+               only: [sarahlyne46-cap1-ubuntu]            
        - configure-cluster:
            requires: [configure-infrastructure]
            filters:
              branches:
-               only: [main]      
+               only: [sarahlyne46-cap1-ubuntu]      
        - deploy-blue:
            requires: [configure-cluster]
            filters:
              branches:
-               only: [main]     
+               only: [sarahlyne46-cap1-ubuntu]     
 #       - deploy-code
 #       - test
