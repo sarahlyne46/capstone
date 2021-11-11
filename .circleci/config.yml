@@ -230,7 +230,7 @@ jobs:
           name: Get LoadBalancer DNS 
           command: |
             cat ~/inventory.txt
-            cd ansible
+            cd .circleci/ansible
             ansible-playbook -i ~/inventory.txt -vvv get-dns.yml
             cat ~/elb_dns.txt
       - persist_to_workspace:
