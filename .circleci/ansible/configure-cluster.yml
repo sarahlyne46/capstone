@@ -1,7 +1,7 @@
 ---
 - name: "Deploy EKS"
   hosts: webserver
-  user: linux
+  user: ubuntu
   gather_facts: false
   become: yes
   vars:
