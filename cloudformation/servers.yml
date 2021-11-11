@@ -6,14 +6,14 @@ Parameters:
     EnvironmentName:
         Description: An environment name that will be prefixed to resource names
         Type: String
-        Default: capstone-project-test
+        Default: capstone-project-ubuntu
 
 Resources:
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupName: !Sub Webservers
-      GroupDescription: Allow port 22
+      GroupDescription: Allow port 22 and post 80
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22
@@ -28,7 +28,7 @@ Resources:
       SecurityGroups:
         - Ref: InstanceSecurityGroup
       KeyName: udacity 
-      ImageId: ami-01cc34ab2709337aa    # Linux 2 in region us-east-1
+      ImageId: ami-0279c3b3186e54acd    # ubuntu 18.04 in region us-east-1
       Tags:
         - Key: Name
           Value: !Sub ${EnvironmentName}-blue
@@ -42,7 +42,7 @@ Resources:
       SecurityGroups:
         - Ref: InstanceSecurityGroup
       KeyName: udacity 
-      ImageId: ami-01cc34ab2709337aa    # Linux 2 in region us-east-1
+      ImageId: ami-0279c3b3186e54acd    # ubuntu 18.04 in region us-east-1
       Tags:
         - Key: Name
           Value: !Sub ${EnvironmentName}-green
@@ -53,7 +53,7 @@ Resources:
   WebsiteBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub "sl-capstone-website-test"
+      BucketName: !Sub "sl-capstone-website-ubuntu"
       AccessControl: PublicRead
       WebsiteConfiguration:
         IndexDocument: index.html
