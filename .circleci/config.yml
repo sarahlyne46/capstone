@@ -218,6 +218,25 @@ jobs:
              cd .circleci/ansible
              echo $PWD
              ansible-playbook -i ~/inventory.txt -vvv configure-cluster.yml
+
+      - run:
+          name: Wait for LoadBalancer's domain to become reachable
+          command: |
+            cat ~/inventory.txt
+            echo "Wait 60 seconds..."
+            sleep 60
+            
+      - run:
+          name: Get LoadBalancer DNS 
+          command: |
+            cat ~/inventory.txt
+            cd ansible
+            ansible-playbook -i ~/inventory.txt -vvv get-dns.yml
+            cat ~/elb_dns.txt
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - elb_dns.txt
               
   deploy-blue:
     docker:
@@ -292,10 +311,10 @@ workflows:
            filters:
              branches:
                only: [main]      
-       - deploy-blue:
-           requires: [configure-cluster]
-           filters:
-             branches:
-               only: [main]     
+ #      - deploy-blue:
+ #          requires: [configure-cluster]
+ #          filters:
+ #            branches:
+ #              only: [main]     
 #       - deploy-code
 #       - test
