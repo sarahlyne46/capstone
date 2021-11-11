@@ -190,7 +190,7 @@ jobs:
                 echo "Our management instances are already configured."
               else
                 cat ~/inventory.txt
-                cd ansible
+                cd .circleci/ansible
                 ansible-playbook -i ~/inventory.txt configure-server.yml
               fi
 
