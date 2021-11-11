@@ -28,7 +28,7 @@ Resources:
       SecurityGroups:
         - Ref: InstanceSecurityGroup
       KeyName: udacity 
-      ImageId: ami-0279c3b3186e54acd    # ubuntu 18.04 in region us-east-1
+      ImageId: ami-020db2c14939a8efb    # ubuntu 18.04 in region us-east-2
       Tags:
         - Key: Name
           Value: !Sub ${EnvironmentName}-blue
@@ -42,7 +42,7 @@ Resources:
       SecurityGroups:
         - Ref: InstanceSecurityGroup
       KeyName: udacity 
-      ImageId: ami-0279c3b3186e54acd    # ubuntu 18.04 in region us-east-1
+      ImageId: ami-020db2c14939a8efb    # ubuntu 18.04 in region us-east-2
       Tags:
         - Key: Name
           Value: !Sub ${EnvironmentName}-green
