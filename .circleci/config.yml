@@ -101,7 +101,7 @@ jobs:
             aws cloudformation deploy \
               --template-file cloudformation/eks-network.yml \
               --stack-name "cap-network-ubuntu" \
-              --region us-east-1 \
+              --region us-east-2 \
               --parameter-overrides file://cloudformation/eks-network-param.json \
               --tags project=capstone-project
 
@@ -112,7 +112,7 @@ jobs:
             aws cloudformation deploy \
               --template-file cloudformation/eks-cluster.yml \
               --stack-name "cap-cluster-ubuntu" \
-              --region us-east-1 \
+              --region us-east-2 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/eks-cluster-param.json \
               --tags project=capstone-project \
@@ -124,7 +124,7 @@ jobs:
             aws cloudformation deploy \
               --template-file cloudformation/nodes.yml \
               --stack-name "cap-nodegroup-ubuntu" \
-              --region us-east-1 \
+              --region us-east-2 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/nodes-param.json \
               --tags project=capstone-project \
@@ -136,7 +136,7 @@ jobs:
             aws cloudformation deploy \
               --template-file cloudformation/servers.yml \
               --stack-name "cap-servers-ubuntu" \
-              --region us-east-1 \
+              --region us-east-2 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/servers-param.json \
               --tags project=capstone-project \
@@ -149,7 +149,7 @@ jobs:
           command: |
             echo [webserver] > ~/inventory.txt
             aws ec2 describe-instances \
-              --region us-east-1 \
+              --region us-east-2 \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:Name,Values=capstone-project*" \
               --output text >> ~/inventory.txt
