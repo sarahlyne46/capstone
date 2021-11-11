@@ -1,7 +1,7 @@
 ---
 - name: "Install dependencies"
   hosts: webserver
-  user: linux
+  user: capstone
   gather_facts: false
   become: yes
   pre_tasks:
