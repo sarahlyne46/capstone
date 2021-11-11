@@ -231,7 +231,7 @@ jobs:
           command: |
             cat ~/inventory.txt
             cd .circleci/ansible
-            ansible-playbook -i ~/inventory.txt -vvv get-dns.yml
+            ansible-playbook -i ~/inventory.txt -vvv get_dns.yml
             cat ~/elb_dns.txt
       - persist_to_workspace:
           root: ~/
