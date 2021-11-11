@@ -53,7 +53,7 @@ Resources:
   WebsiteBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub "sl-capstone-website"
+      BucketName: !Sub "sl-capstone-website-test"
       AccessControl: PublicRead
       WebsiteConfiguration:
         IndexDocument: index.html
