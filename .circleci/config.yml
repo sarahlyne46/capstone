@@ -241,53 +241,30 @@ jobs:
           root: ~/
           paths:
             - elb_dns.txt
-              
-  deploy-blue:
+  
+          
+  deploy-code:
     docker:
       - image: python:3.7-alpine3.11
-    
-    working_directory: ~/kube
-    
     steps:
       - checkout
-      # Deploy code
+      - add_ssh_keys:
+          fingerprints: ["78:a8:3d:8a:cd:bf:35:ce:21:33:ea:c9:e2:9e:bc:70"]      
+      - attach_workspace:
+          at: ~/
       - run:
-          name: Deploy Blue version
+          name: Install dependencies
           command: |
-            kubectl apply -f app-blue.yaml -f app-service-bg.yaml
+            apk add --update ansible
+      - run:
+          name: deploy updated docker version
+          no_output_timeout: 30m
+          command: |
+             echo $PWD
+             cd .circleci/ansible
+             echo $PWD
+             ansible-playbook -i ~/inventory.txt -vvv deploy-green.yml
 
-#
-#  configure-kubernetes:
-#    docker:
-#      - image: xxx
-#
-#    working_directory: ~/repo
-#
-#    steps:
-#      - checkout
-#      # Deploy code
-#      - run:
-#          name: configure
-#
-#  deploy-code:
-#    docker:
-#      - image: xxx
-#
-#    working_directory: ~/repo
-#
-#    steps:
-#      - checkout
-#      # Deploy code
-#      - run:
-#          name: Deploy new webpage      
-#
-#
-#  test:
-#      # Test deployments
-#      - run:
-#          name: Testing
-#
-#
 
 workflows:
   default:
@@ -302,6 +279,7 @@ workflows:
              branches:
                only: [main]            
        - deploy-infrastructure:
+           requires: [upload-docker]       
            filters:
             branches:
               only: [main]           
@@ -315,10 +293,8 @@ workflows:
            filters:
              branches:
                only: [main]      
-#       - deploy-blue:
+#       - deploy-code:
 #           requires: [configure-cluster]
 #           filters:
 #             branches:
-#               only: [main]     
-#       - deploy-code
-#       - test
+#               only: [main]
