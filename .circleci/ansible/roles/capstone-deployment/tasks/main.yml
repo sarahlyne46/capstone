@@ -19,7 +19,7 @@
     chdir: $HOME
     
 - name: Describe pods
-  shell: "./bin/kubectl describe pods -o wide"
+  shell: "./bin/kubectl describe pods"
   args:
     chdir: $HOME
     
