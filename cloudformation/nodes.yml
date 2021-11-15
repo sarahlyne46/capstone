@@ -30,6 +30,15 @@ Parameters:
     Type: AWS::EC2::KeyPair::KeyName
 
 
+Mappings:
+  ServicePrincipals:
+    aws-cn:
+      ec2: ec2.amazonaws.com.cn
+    aws-us-gov:
+      ec2: ec2.amazonaws.com
+    aws:
+      ec2: ec2.amazonaws.com
+
 Resources:
   NodeInstanceRole:
     Type: "AWS::IAM::Role"
@@ -50,14 +59,6 @@ Resources:
         - !Sub "arn:${AWS::Partition}:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
       Path: /
 
-Mappings:
-  ServicePrincipals:
-    aws-cn:
-      ec2: ec2.amazonaws.com.cn
-    aws-us-gov:
-      ec2: ec2.amazonaws.com
-    aws:
-      ec2: ec2.amazonaws.com
 
   NodeGroup:
     Type: AWS::EKS::Nodegroup
