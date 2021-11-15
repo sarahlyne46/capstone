@@ -1,6 +1,6 @@
 - name: Copy deployment configuration
   copy:
-    src: "app-blue.yml"
+    src: "app-green.yml"
     dest: $HOME
 
 - name: Check deployments
@@ -9,16 +9,16 @@
     chdir: $HOME
 
 - name: Check pods
-  shell: "./bin/kubectl get pods"
+  shell: "./bin/kubectl get pod app-green"
   args:
     chdir: $HOME
 
 - name: Describe pods
-  shell: "./bin/kubectl describe pod"
+  shell: "./bin/kubectl describe pod app-green"
   args:
     chdir: $HOME
     
 - name: Apply deployment configuration
-  shell: "./bin/kubectl apply -f app-blue.yml"
+  shell: "./bin/kubectl apply -f app-green.yml"
   args:
     chdir: $HOME
