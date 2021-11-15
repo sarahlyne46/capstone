@@ -311,10 +311,10 @@ workflows:
            filters:
              branches:
                only: [main]      
- #      - deploy-blue:
- #          requires: [configure-cluster]
- #          filters:
- #            branches:
- #              only: [main]     
+       - deploy-blue:
+           requires: [configure-cluster]
+           filters:
+             branches:
+               only: [main]     
 #       - deploy-code
 #       - test
