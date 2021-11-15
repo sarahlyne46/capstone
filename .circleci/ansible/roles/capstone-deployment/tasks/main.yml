@@ -7,6 +7,16 @@
   shell: "./bin/kubectl get deployments"
   args:
     chdir: $HOME
+
+- name: Check pods
+  shell: "./bin/kubectl get pods"
+  args:
+    chdir: $HOME
+
+- name: Describe pods
+  shell: "./bin/kubectl describe pod"
+  args:
+    chdir: $HOME
     
 - name: Apply deployment configuration
   shell: "./bin/kubectl apply -f app-blue.yml"
