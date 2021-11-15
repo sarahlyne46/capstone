@@ -2,8 +2,7 @@
   copy:
     src: "app-blue.yml"
     dest: $HOME
-
-- name: Apply deployment configuration
-  shell: "./bin/kubectl apply -f app-blue.yml"
-  args:
-    chdir: $HOME
+- name: Update the deployment to run the latest Build
+  shell: "./bin/kubectl set image deployments/capstone-project-deployment capstone-project-app=sarahlyne46/capstone:{{ CIRCLE_WORKFLOW_ID }}"
+    args:
+      chdir: $HOME
