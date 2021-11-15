@@ -7,3 +7,8 @@
   command: "./bin/kubectl apply -f app-service.yml"
   args:
     chdir: $HOME
+    
+- name: Check if deployment worked
+  shell: "./bin/kubectl rollout status deployments/capstone-project-ubuntu-deployment"
+  args:
+    chdir: $HOME    
