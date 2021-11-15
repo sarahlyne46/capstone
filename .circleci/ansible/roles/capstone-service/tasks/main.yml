@@ -9,6 +9,6 @@
     chdir: $HOME
     
 - name: Check if deployment worked
-  shell: "./bin/kubectl rollout status deployments/capstone-project-ubuntu-deployment"
+  shell: "./bin/kubectl rollout status deployments/capstone-project-deployment"
   args:
     chdir: $HOME    
