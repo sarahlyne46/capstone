@@ -57,7 +57,9 @@ Resources:
                 - ","
                 - Fn::ImportValue:
                     Fn::Sub: ${EnvironmentName}-PUB-NETS
-
+          Tags:
+          - Key: Name
+            Value: !Sub ${EnvironmentName}-EKSCluster
 Outputs:
     EksId:
         Description: EKS id
