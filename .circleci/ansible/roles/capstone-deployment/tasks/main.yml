@@ -3,6 +3,11 @@
     src: "app-blue.yml"
     dest: $HOME
 
+- name: Check deployments
+  shell: "./bin/kubectl get deployments"
+  args:
+    chdir: $HOME
+    
 - name: Apply deployment configuration
   shell: "./bin/kubectl apply -f app-blue.yml"
   args:
