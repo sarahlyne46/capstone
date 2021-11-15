@@ -74,6 +74,9 @@ Resources:
           - ","
           - Fn::ImportValue:
               Fn::Sub: ${EnvironmentName}-PUB-NETS
+      Tags:
+      - Key: Name
+        Value: !Sub {EnvironmentName}-Nodes
 
 Outputs:
   NodeInstanceRole:
