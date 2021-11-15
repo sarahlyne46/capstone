@@ -1,0 +1,19 @@
+- name: Copy deployment configuration
+  copy:
+    src: "app-green.yml"
+    dest: $HOME
+
+- name: Apply deployment configuration
+  shell: "./bin/kubectl apply -f app-green.yml"
+  args:
+    chdir: $HOME
+
+- name: Copy service configuration
+  copy:
+    src: "app-green-service.yml"
+    dest: $HOME
+
+- name: Create service configuration
+  command: "./bin/kubectl apply -f app-green-service.yml"
+  args:
+    chdir: $HOME
