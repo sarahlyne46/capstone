@@ -50,6 +50,10 @@ Resources:
         - !Sub "arn:${AWS::Partition}:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
       Path: /
 
+Mappings:
+  ServicePrincipals:
+    aws:
+      ec2: ec2.amazonaws.com
 
   NodeGroup:
     Type: AWS::EKS::Nodegroup
