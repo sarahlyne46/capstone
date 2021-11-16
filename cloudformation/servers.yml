@@ -12,7 +12,7 @@ Resources:
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupName: !Sub Webservers
+      GroupName: !Sub Webservers2
       GroupDescription: Allow port 22
       SecurityGroupIngress:
         - IpProtocol: tcp
@@ -31,7 +31,7 @@ Resources:
       ImageId: ami-020db2c14939a8efb    # ubuntu 18.04 in region us-east-2
       Tags:
         - Key: Name
-          Value: !Sub ${EnvironmentName}-blue
+          Value: !Sub ${EnvironmentName}-A
         - Key: Project
           Value: !Ref EnvironmentName
 
@@ -45,6 +45,6 @@ Resources:
       ImageId: ami-020db2c14939a8efb    # ubuntu 18.04 in region us-east-2
       Tags:
         - Key: Name
-          Value: !Sub ${EnvironmentName}-green
+          Value: !Sub ${EnvironmentName}-B
         - Key: Project
           Value: !Ref EnvironmentName
