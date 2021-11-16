@@ -151,7 +151,7 @@ jobs:
             aws ec2 describe-instances \
               --region us-east-2 \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=tag:project,Values=capstone-project-servers" \
+              --filters "Name=tag:Name,Values=capstone-v2-servers" \
               --output text >> ~/inventory.txt
             cat ~/inventory.txt
       - persist_to_workspace:
