@@ -1,6 +1,6 @@
 ---
 - name: "Deploy EKS"
-  hosts: webserver[0]
+  hosts: webservers[0]
   user: ubuntu
   gather_facts: false
   become: yes
