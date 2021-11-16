@@ -41,4 +41,4 @@
     ENVIRONMENT_NAME: "{{ lookup('env', 'ENVIRONMENT_NAME') }}"
   pre_tasks:
     - name: Create a kubeconfig file for the cluster
-      shell: "aws eks update-kubeconfig --region us-east-2 --name capstone-project-ubuntu-cluster"
+      shell: "aws eks update-kubeconfig --region us-east-2 --name capstone-project-v2-cluster"
