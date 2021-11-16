@@ -221,7 +221,7 @@ jobs:
              echo $PWD
              cd .circleci/ansible
              echo $PWD
-             ansible-playbook -i ~/inventory.txt -v configure-cluster.yml
+             ansible-playbook -i ~/inventory.txt -vvv configure-cluster.yml
 
       - run:
           name: Wait for LoadBalancer's domain to become reachable
