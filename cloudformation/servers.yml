@@ -6,7 +6,7 @@ Parameters:
     EnvironmentName:
         Description: An environment name that will be prefixed to resource names
         Type: String
-        Default: capstone-project-v2
+        Default: capstone-project-1711
 
 Resources:
   InstanceSecurityGroup:
@@ -24,7 +24,7 @@ Resources:
   EC2InstanceA:
     Type: AWS::EC2::Instance
     Properties:
-      InstanceType: t2.medium
+      InstanceType: t3.medium
       SecurityGroups:
         - Ref: InstanceSecurityGroup
       KeyName: capstone 
@@ -38,7 +38,7 @@ Resources:
   EC2InstanceB:
     Type: AWS::EC2::Instance
     Properties:
-      InstanceType: t2.medium
+      InstanceType: t3.medium
       SecurityGroups:
         - Ref: InstanceSecurityGroup
       KeyName: capstone 

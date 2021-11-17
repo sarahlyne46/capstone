@@ -1,6 +1,6 @@
 ---
 - name: "Deploy Green version"
-  hosts: webservers[1]
+  hosts: webserver3[1]
   user: ubuntu
   gather_facts: false
   become: yes
