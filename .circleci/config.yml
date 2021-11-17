@@ -14,6 +14,23 @@ parameters:
     type: string
     default: "capstone-1711"
 
+commands:
+  delete-environment:
+    description: Destroy cloudformation stacks given a workflow ID.
+    steps:
+      - run:
+          name: Destroy environments
+          command: |
+            # Delete Servers stack
+            aws cloudformation delete-stack --stack-name capstone-1711-servers --region us-east-2
+            # Delete Nodegroup stack
+            aws cloudformation delete-stack --stack-name capstone-1711-nodegroup --region us-east-2
+            # Delete Cluster stack
+            aws cloudformation delete-stack --stack-name capstone-1711-cluster --region us-east-2
+            # Delete Network stack
+            aws cloudformation delete-stack --stack-name capstone-1711-network --region us-east-2     
+            
+            
 jobs:
   build:
     docker:
@@ -79,7 +96,7 @@ jobs:
             docker login -u="$DOCKERHUB_USERNAME" -p="$DOCKERHUB_PASSWORD"
             docker tag $DOCKER_IMAGE_NAME $DOCKER_PATH:$CIRCLE_WORKFLOW_ID
             docker push $DOCKER_PATH:$CIRCLE_WORKFLOW_ID
- 
+
 
   deploy-infrastructure:
 
@@ -157,7 +174,7 @@ jobs:
           paths:
             - inventory.txt
             - servers.txt                   
-
+#      - delete-environment
 
   configure-infrastructure:
     docker:
@@ -191,6 +208,7 @@ jobs:
             cat ~/inventory.txt
             cd .circleci/ansible
             ansible-playbook -i ~/inventory.txt -vvv configure-server.yml
+#      - delete-environment
 
   configure-cluster:
     docker:
@@ -239,7 +257,7 @@ jobs:
           root: ~/
           paths:
             - elb_dns.txt
-  
+#      - delete-environment  
           
   deploy-code:
     docker:
@@ -262,7 +280,7 @@ jobs:
              cd .circleci/ansible
              echo $PWD
              ansible-playbook -i ~/inventory.txt -vvv deploy-green.yml
-
+#      - delete-environment
 
 workflows:
   default:
