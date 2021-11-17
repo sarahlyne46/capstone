@@ -9,10 +9,10 @@ orbs:
 parameters:
   DOCKER_PATH:
     type: string
-    default: "sarahlyne46/capstone-v2"
+    default: "sarahlyne46/capstone-1711"
   DOCKER_IMAGE_NAME:
     type: string
-    default: "capstone-v2"
+    default: "capstone-1711"
 
 jobs:
   build:
@@ -98,7 +98,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/eks-network.yml \
-              --stack-name "capstone-v2-network" \
+              --stack-name "capstone-1711-network" \
               --region us-east-2 \
               --parameter-overrides file://cloudformation/eks-network-param.json \
               --tags project=capstone-project
@@ -109,7 +109,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/eks-cluster.yml \
-              --stack-name "capstone-v2-cluster" \
+              --stack-name "capstone-1711-cluster" \
               --region us-east-2 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/eks-cluster-param.json \
@@ -121,7 +121,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/nodes.yml \
-              --stack-name "capstone-v2-nodegroup" \
+              --stack-name "capstone-1711-nodegroup" \
               --region us-east-2 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/nodes-param.json \
@@ -133,7 +133,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/servers.yml \
-              --stack-name "capstone-v2-servers" \
+              --stack-name "capstone-1711-servers" \
               --region us-east-2 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/servers-param.json \
@@ -149,7 +149,7 @@ jobs:
             aws ec2 describe-instances \
               --region us-east-2 \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=tag:Name,Values=capstone-project-v2*" \
+              --filters "Name=tag:Name,Values=capstone-project-1711*" \
               --output text >> ~/inventory.txt
             cat ~/inventory.txt
       - persist_to_workspace:
@@ -291,8 +291,8 @@ workflows:
            filters:
              branches:
                only: [main]      
-       - deploy-code:
-           requires: [configure-cluster]
-           filters:
-             branches:
-               only: [main]
+#       - deploy-code:
+#           requires: [configure-cluster]
+#           filters:
+#             branches:
+#               only: [main]
