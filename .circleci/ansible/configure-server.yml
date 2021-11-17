@@ -10,7 +10,12 @@
         name: [ "unzip" ]
         state: latest
         update_cache: yes
-
+    - name: "Install 'awscli'"
+      apt:
+        name: [ "awscli" ]
+        state: latest
+        update_cache: yes
+  
   roles:
     - install-kubectl
 
