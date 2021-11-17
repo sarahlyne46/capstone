@@ -145,7 +145,7 @@ jobs:
       - run:
           name: Get IP Addresses names
           command: |
-            echo [webserver3] > ~/inventory.txt
+            echo [webserver1711] > ~/inventory.txt
             aws ec2 describe-instances \
               --region us-east-2 \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
