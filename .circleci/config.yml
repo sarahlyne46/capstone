@@ -298,16 +298,16 @@ workflows:
            filters:
             branches:
               only: [main]           
-#       - configure-infrastructure:
-#           requires: [deploy-infrastructure]
-#           filters:
-#             branches:
-#               only: [main]            
-#       - configure-cluster:
-#           requires: [configure-infrastructure]
-#           filters:
-#             branches:
-#               only: [main]      
+       - configure-infrastructure:
+           requires: [deploy-infrastructure]
+           filters:
+             branches:
+               only: [main]            
+       - configure-cluster:
+           requires: [configure-infrastructure]
+           filters:
+             branches:
+               only: [main]      
 #       - deploy-code:
 #           requires: [configure-cluster]
 #           filters:
