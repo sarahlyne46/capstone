@@ -75,9 +75,6 @@ Resources:
           - ","
           - Fn::ImportValue:
               Fn::Sub: ${EnvironmentName}-PUB-NETS
-      Tags:
-      - Key: Name
-        Value: capstone-node-1711
         
 Outputs:
   NodeInstanceRole:
