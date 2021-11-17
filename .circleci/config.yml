@@ -12,10 +12,10 @@ parameters:
     default: "sarahlyne46/capstone_v1"
   DOCKER_IMAGE_NAME:
     type: string
-    default: "capstone_v1_1711"
+    default: "capstone-v1-1711"
   ENV_NAME:
     type: string
-    default: "capstone_v1"
+    default: "capstone-v1"
   INV_NAME:
     type: string
     default: "webserver"
@@ -118,7 +118,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/eks-network.yml \
-              --stack-name "capstone_v1-network" \
+              --stack-name "capstone-v1-network" \
               --region us-east-2 \
               --parameter-overrides file://cloudformation/eks-network-param.json \
               --tags project=capstone-project
@@ -128,7 +128,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/eks-cluster.yml \
-              --stack-name "capstone_v1-cluster" \
+              --stack-name "capstone-v1-cluster" \
               --region us-east-2 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/eks-cluster-param.json \
@@ -139,7 +139,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/nodes.yml \
-              --stack-name "capstone_v1-nodegroup" \
+              --stack-name "capstone-v1-nodegroup" \
               --region us-east-2 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/nodes-param.json \
@@ -151,7 +151,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/servers.yml \
-              --stack-name "capstone_v1-servers" \
+              --stack-name "capstone-v1-servers" \
               --region us-east-2 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/servers-param.json \
@@ -166,7 +166,7 @@ jobs:
             aws ec2 describe-instances \
               --region us-east-2 \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=tag:Name,Values=capstone_v1*" \
+              --filters "Name=tag:Name,Values=capstone-v1*" \
               --output text >> ~/inventory.txt
             cat ~/inventory.txt
       - persist_to_workspace:
