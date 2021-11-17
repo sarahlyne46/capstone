@@ -1,275 +1,33 @@
 version: 2.1
 
 orbs:
-  aws-cli: circleci/aws-cli@2.0.3
-  aws-eks: circleci/aws-eks@1.1.0
-  kubernetes: circleci/kubernetes@0.4.0  
-#  slack: circleci/slack@4.2.1https://github.com/sarahlyne46/capstone/tree/sarahlyne46-cap1-ubuntu
+  aws-eks: circleci/aws-eks@0.2.3
+  kubernetes: circleci/kubernetes@0.4.0
 
-parameters:
-  DOCKER_PATH:
-    type: string
-    default: "sarahlyne46/capstone_v1"
-  DOCKER_IMAGE_NAME:
-    type: string
-    default: "capstone-v1-1711"
-  ENV_NAME:
-    type: string
-    default: "capstone-v1"
-  INV_NAME:
-    type: string
-    default: "webserver"
-    
-    
-commands:
-  delete-environment:
-    description: Destroy cloudformation stacks given a workflow ID.
-    steps:
-      - run:
-          name: Destroy environments
-          command: |
-            # Delete Servers stack
-            aws cloudformation delete-stack --stack-name {ENV_NAME}-servers --region us-east-2
-            # Delete Nodegroup stack
-            aws cloudformation delete-stack --stack-name {ENV_NAME}-nodegroup --region us-east-2
-            # Delete Cluster stack
-            aws cloudformation delete-stack --stack-name {ENV_NAME}-cluster --region us-east-2
-            # Delete Network stack
-            aws cloudformation delete-stack --stack-name {ENV_NAME}-network --region us-east-2     
-            
-            
+
 jobs:
-  build:
-    docker:
-      - image: python:3.7.3-stretch
-
+  test-cluster:
+    executor: aws-eks/python3
+    parameters:
+      cluster-name:
+        description: |
+          Name of the EKS cluster
+        type: string
     steps:
-      - checkout
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "requirements.txt" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-
+      - kubernetes/install
+      - aws-eks/update-kubeconfig-with-authenticator:
+          cluster-name: << parameters.cluster-name >>
       - run:
-          name: install dependencies
           command: |
-            python3 -m venv venv
-            . venv/bin/activate
-            make install
-      - run:
-          name: Install hadolint
-          command: |
-            wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64 && chmod +x /bin/hadolint
-      - run:
-          name: run lint
-          command: |
-            . venv/bin/activate
-            make lint   
-      - save_cache:
-          paths:
-            - ./venv
-          key: v1-dependencies-{{ checksum "requirements.txt" }}
-
-  upload-docker:
-    docker:
-      - image: circleci/golang:1.15
-        auth:
-          username: $DOCKERHUB_USERNAME
-          password: $DOCKERHUB_PASSWORD
-
-    working_directory: ~/repo
-
-    steps:
-      - checkout
-      
-      - setup_remote_docker:
-          version: 19.03.13
-
-      - run:
-          name: Build docker container
-          command: |
-            docker build --tag=$DOCKER_IMAGE_NAME .
-            docker image ls
-      
-      - run:
-          name: Upload Docker
-          command: |
-            echo "Docker ID and Image: $DOCKER_IMAGE_NAME"
-            docker login -u="$DOCKERHUB_USERNAME" -p="$DOCKERHUB_PASSWORD"
-            docker tag $DOCKER_IMAGE_NAME $DOCKER_PATH:$CIRCLE_WORKFLOW_ID
-            docker push $DOCKER_PATH:$CIRCLE_WORKFLOW_ID
-
-  deploy-infrastructure:
-
-    docker:
-      - image: amazon/aws-cli
-
-    steps:
-      - checkout
-
-      - run:
-          name: Install dependencies
-          command: yum install -y tar gzip
-
-      - run:
-          name: Create EKS using eksctl
-          command: |
-            cd .circleci/ansible
-            eksctl create cluster -f cluster.yml
-             
-      - run:
-          name: Get IP Addresses names
-          command: |
-            echo [webserver] > ~/inventory.txt
-            aws ec2 describe-instances \
-              --region us-east-2 \
-              --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=tag:Name,Values=capstone-v1*" \
-              --output text >> ~/inventory.txt
-            cat ~/inventory.txt
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - inventory.txt
-            - servers.txt                   
-#      - delete-environment
-
-  configure-infrastructure:
-    docker:
-      - image: python:3.7-alpine3.11
-    environment:
-      ANSIBLE_HOST_KEY_CHECKING: "false"      
-    steps:
-      - checkout
-      - add_ssh_keys:
-          fingerprints: ["78:a8:3d:8a:cd:bf:35:ce:21:33:ea:c9:e2:9e:bc:70"]
-      - attach_workspace:
-          at: ~/
-      - run:
-          name: update pip
-          command: |
-            /usr/local/bin/python -m pip install --upgrade pip
-      - run:            
-          name: Install dependencies
-          command: |
-            apk add --update tar gzip ansible nodejs npm curl
-            pip install awscli
-      - run:
-          name: check inventory file
-          command: |
-            cat ~/inventory.txt
-      - run:
-          name: configure server
-          no_output_timeout: 30m
-          command: |
-            cat ~/servers.txt
-            cat ~/inventory.txt
-            cd .circleci/ansible
-            ansible-playbook -i ~/inventory.txt -vvv configure-server.yml
-#      - delete-environment
-
-  configure-cluster:
-    docker:
-      - image: python:3.7-alpine3.11
-    environment:
-      ANSIBLE_HOST_KEY_CHECKING: "false"      
-    steps:
-      - checkout
-      - add_ssh_keys:
-          fingerprints: ["78:a8:3d:8a:cd:bf:35:ce:21:33:ea:c9:e2:9e:bc:70"]      
-      - attach_workspace:
-          at: ~/
-      - run:
-          name: Install dependencies
-          command: |
-            apk add --update tar gzip ansible nodejs npm curl
-            pip install awscli
-      - run:
-          name: check inventory file
-          command: |
-            cat ~/inventory.txt
-      - run:
-          name: configure server
-          no_output_timeout: 30m
-          command: |
-             echo $PWD
-             cd .circleci/ansible
-             echo $PWD
-             ansible-playbook -i ~/inventory.txt -vvv configure-cluster.yml
-      - run:
-          name: Wait for LoadBalancer's domain to become reachable
-          command: |
-            cat ~/inventory.txt
-            echo "Wait 60 seconds..."
-            sleep 60
-            
-      - run:
-          name: Get LoadBalancer DNS 
-          command: |
-            cat ~/inventory.txt
-            cd .circleci/ansible
-            ansible-playbook -i ~/inventory.txt -vvv get_dns.yml
-            cat ~/elb_dns.txt
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - elb_dns.txt
-#      - delete-environment  
-          
-  deploy-code:
-    docker:
-      - image: python:3.7-alpine3.11
-    steps:
-      - checkout
-      - add_ssh_keys:
-          fingerprints: ["78:a8:3d:8a:cd:bf:35:ce:21:33:ea:c9:e2:9e:bc:70"]      
-      - attach_workspace:
-          at: ~/
-      - run:
-          name: Install dependencies
-          command: |
-            apk add --update ansible
-      - run:
-          name: deploy updated docker version
-          no_output_timeout: 30m
-          command: |
-             echo $PWD
-             cd .circleci/ansible
-             echo $PWD
-             ansible-playbook -i ~/inventory.txt -vvv deploy-green.yml
-#      - delete-environment
+            kubectl get services
+          name: Test cluster
 
 workflows:
-  default:
+  deployment:
     jobs:
-       - build:
-           filters:
-            branches:
-              only: [main]   
-       - upload-docker:
-           requires: [build]
-           filters:
-             branches:
-               only: [main]            
-       - deploy-infrastructure:
-           requires: [upload-docker]       
-           filters:
-            branches:
-              only: [main]           
-#       - configure-infrastructure:
-#           requires: [deploy-infrastructure]
-#           filters:
-#             branches:
-#               only: [main]            
-#       - configure-cluster:
-#           requires: [configure-infrastructure]
-#           filters:
-#             branches:
-#              only: [main]      
-#       - deploy-code:
-#           requires: [configure-cluster]
-#           filters:
-#             branches:
-#               only: [main]
+      - aws-eks/create-cluster:
+          cluster-name: my-eks-demo
+      - test-cluster:
+          cluster-name: my-eks-demo
+          requires:
+            - aws-eks/create-cluster
