@@ -114,51 +114,11 @@ jobs:
           command: yum install -y tar gzip
 
       - run:
-          name: Create EKS Network
+          name: Create EKS using eksctl
           command: |
-            aws cloudformation deploy \
-              --template-file cloudformation/eks-network.yml \
-              --stack-name "capstone-v1-network" \
-              --region us-east-2 \
-              --parameter-overrides file://cloudformation/eks-network-param.json \
-              --tags project=capstone-project
-      - run:
-          name: Create EKS Cluster
-          no_output_timeout: 30m          
-          command: |
-            aws cloudformation deploy \
-              --template-file cloudformation/eks-cluster.yml \
-              --stack-name "capstone-v1-cluster" \
-              --region us-east-2 \
-              --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
-              --parameter-overrides file://cloudformation/eks-cluster-param.json \
-              --tags project=capstone-project \
-              --no-verify-ssl
-      - run:
-          name: Create Node group
-          command: |
-            aws cloudformation deploy \
-              --template-file cloudformation/nodes.yml \
-              --stack-name "capstone-v1-nodegroup" \
-              --region us-east-2 \
-              --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
-              --parameter-overrides file://cloudformation/nodes-param.json \
-              --tags project=capstone-project \
-              --no-verify-ssl
-                                                                            
-      - run:
-          name: Create servers
-          command: |
-            aws cloudformation deploy \
-              --template-file cloudformation/servers.yml \
-              --stack-name "capstone-v1-servers" \
-              --region us-east-2 \
-              --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
-              --parameter-overrides file://cloudformation/servers-param.json \
-              --tags project=capstone-project-servers \
-              --no-verify-ssl \
-              --output text >> ~/servers.txt
-            cat ~/servers.txt
+            cd .circleci/ansible
+            eksctl create cluster -f cluster.yml
+             
       - run:
           name: Get IP Addresses names
           command: |
@@ -298,16 +258,16 @@ workflows:
            filters:
             branches:
               only: [main]           
-       - configure-infrastructure:
-           requires: [deploy-infrastructure]
-           filters:
-             branches:
-               only: [main]            
-       - configure-cluster:
-           requires: [configure-infrastructure]
-           filters:
-             branches:
-               only: [main]      
+#       - configure-infrastructure:
+#           requires: [deploy-infrastructure]
+#           filters:
+#             branches:
+#               only: [main]            
+#       - configure-cluster:
+#           requires: [configure-infrastructure]
+#           filters:
+#             branches:
+#              only: [main]      
 #       - deploy-code:
 #           requires: [configure-cluster]
 #           filters:
