@@ -9,11 +9,35 @@ orbs:
 parameters:
   DOCKER_PATH:
     type: string
-    default: "sarahlyne46/capstone-1711"
+    default: "sarahlyne46/capstone_v1"
   DOCKER_IMAGE_NAME:
     type: string
-    default: "capstone-1711"
-
+    default: "capstone_v1_1711"
+  ENV_NAME:
+    type: string
+    default: "capstone_v1"
+  INV_NAME:
+    type: string
+    default: "webserver"
+    
+    
+commands:
+  delete-environment:
+    description: Destroy cloudformation stacks given a workflow ID.
+    steps:
+      - run:
+          name: Destroy environments
+          command: |
+            # Delete Servers stack
+            aws cloudformation delete-stack --stack-name {ENV_NAME}-servers --region us-east-2
+            # Delete Nodegroup stack
+            aws cloudformation delete-stack --stack-name {ENV_NAME}-nodegroup --region us-east-2
+            # Delete Cluster stack
+            aws cloudformation delete-stack --stack-name {ENV_NAME}-cluster --region us-east-2
+            # Delete Network stack
+            aws cloudformation delete-stack --stack-name {ENV_NAME}-network --region us-east-2     
+            
+            
 jobs:
   build:
     docker:
@@ -34,18 +58,15 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             make install
-
       - run:
           name: Install hadolint
           command: |
             wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64 && chmod +x /bin/hadolint
-
       - run:
           name: run lint
           command: |
             . venv/bin/activate
             make lint   
-
       - save_cache:
           paths:
             - ./venv
@@ -79,7 +100,6 @@ jobs:
             docker login -u="$DOCKERHUB_USERNAME" -p="$DOCKERHUB_PASSWORD"
             docker tag $DOCKER_IMAGE_NAME $DOCKER_PATH:$CIRCLE_WORKFLOW_ID
             docker push $DOCKER_PATH:$CIRCLE_WORKFLOW_ID
- 
 
   deploy-infrastructure:
 
@@ -98,30 +118,28 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/eks-network.yml \
-              --stack-name "capstone-1711-network" \
+              --stack-name "{ENV_NAME}-network" \
               --region us-east-2 \
               --parameter-overrides file://cloudformation/eks-network-param.json \
               --tags project=capstone-project
-
       - run:
           name: Create EKS Cluster
           no_output_timeout: 30m          
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/eks-cluster.yml \
-              --stack-name "capstone-1711-cluster" \
+              --stack-name "{ENV_NAME}-cluster" \
               --region us-east-2 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/eks-cluster-param.json \
               --tags project=capstone-project \
               --no-verify-ssl
-
       - run:
           name: Create Node group
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/nodes.yml \
-              --stack-name "capstone-1711-nodegroup" \
+              --stack-name "{ENV_NAME}-nodegroup" \
               --region us-east-2 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/nodes-param.json \
@@ -133,7 +151,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/servers.yml \
-              --stack-name "capstone-1711-servers" \
+              --stack-name "{ENV_NAME}-servers" \
               --region us-east-2 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/servers-param.json \
@@ -141,11 +159,10 @@ jobs:
               --no-verify-ssl \
               --output text >> ~/servers.txt
             cat ~/servers.txt
-
       - run:
           name: Get IP Addresses names
           command: |
-            echo [webserver1711] > ~/inventory.txt
+            echo [webserver] > ~/inventory.txt
             aws ec2 describe-instances \
               --region us-east-2 \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
@@ -157,7 +174,7 @@ jobs:
           paths:
             - inventory.txt
             - servers.txt                   
-
+#      - delete-environment
 
   configure-infrastructure:
     docker:
@@ -191,6 +208,7 @@ jobs:
             cat ~/inventory.txt
             cd .circleci/ansible
             ansible-playbook -i ~/inventory.txt -vvv configure-server.yml
+#      - delete-environment
 
   configure-cluster:
     docker:
@@ -220,7 +238,6 @@ jobs:
              cd .circleci/ansible
              echo $PWD
              ansible-playbook -i ~/inventory.txt -vvv configure-cluster.yml
-
       - run:
           name: Wait for LoadBalancer's domain to become reachable
           command: |
@@ -239,7 +256,7 @@ jobs:
           root: ~/
           paths:
             - elb_dns.txt
-  
+#      - delete-environment  
           
   deploy-code:
     docker:
@@ -262,7 +279,7 @@ jobs:
              cd .circleci/ansible
              echo $PWD
              ansible-playbook -i ~/inventory.txt -vvv deploy-green.yml
-
+#      - delete-environment
 
 workflows:
   default:
@@ -281,16 +298,16 @@ workflows:
            filters:
             branches:
               only: [main]           
-       - configure-infrastructure:
-           requires: [deploy-infrastructure]
-           filters:
-             branches:
-               only: [main]            
-       - configure-cluster:
-           requires: [configure-infrastructure]
-           filters:
-             branches:
-               only: [main]      
+#       - configure-infrastructure:
+#           requires: [deploy-infrastructure]
+#           filters:
+#             branches:
+#               only: [main]            
+#       - configure-cluster:
+#           requires: [configure-infrastructure]
+#           filters:
+#             branches:
+#               only: [main]      
 #       - deploy-code:
 #           requires: [configure-cluster]
 #           filters:
