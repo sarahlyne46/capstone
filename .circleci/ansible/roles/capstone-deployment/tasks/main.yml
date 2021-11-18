@@ -7,7 +7,9 @@
   shell: "./bin/kubectl apply -f app-blue.yml"
   args:
     chdir: $HOME
-    
+- name: wait for 5 mins
+  shell: sleep 300
+  
 - name: Check deployments
   shell: "./bin/kubectl get deployments"
   args:
