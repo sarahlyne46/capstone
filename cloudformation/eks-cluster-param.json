@@ -2,5 +2,9 @@
     {
         "ParameterKey": "EnvironmentName",
         "ParameterValue": "capstone-test"
+    },
+    {
+        "ParameterKey": "KeyPairName"
+        "ParameterValue": "capstone"
     }
 ]

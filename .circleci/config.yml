@@ -16,6 +16,9 @@ parameters:
   ENV_NAME:
     type: string
     default: "capstone-test"
+  KEY_PAIR:
+    type:string
+    default: "capstone"
 
     
     

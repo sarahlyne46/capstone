@@ -10,6 +10,11 @@ Parameters:
         Description: An environment name that will be prefixed to resource names
         Type: String
         Default: capstone-test
+      
+    KeyPairName:
+        Description: The EC2 Key Pair to allow SSH access to the instances
+        Default: capstone
+        Type: AWS::EC2::KeyPair::KeyName    
 
 Resources:
 
