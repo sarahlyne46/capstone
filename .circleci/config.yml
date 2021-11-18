@@ -17,7 +17,7 @@ parameters:
     type: string
     default: "capstone-test"
   KEY_PAIR:
-    type:string
+    type: string
     default: "capstone"
 
     
@@ -133,7 +133,7 @@ jobs:
               --template-file cloudformation/eks-cluster.yml \
               --stack-name "capstone-test-cluster" \
               --region us-west-2 \
-              --ssh-public-key capstone
+              --ssh-public-key $KEY_PAIR
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/eks-cluster-param.json \
               --tags project=capstone-project \
