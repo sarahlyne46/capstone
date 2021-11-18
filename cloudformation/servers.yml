@@ -28,7 +28,7 @@ Resources:
       SecurityGroups:
         - Ref: InstanceSecurityGroup
       KeyName: capstone 
-      ImageId: ami-020db2c14939a8efb    # ubuntu 18.04 in region us-east-2
+      ImageId: ami-036d46416a34a611c    # ubuntu 20.04 in region us-west-2
       Tags:
         - Key: Name
           Value: !Sub ${EnvironmentName}-A
@@ -42,7 +42,7 @@ Resources:
       SecurityGroups:
         - Ref: InstanceSecurityGroup
       KeyName: capstone 
-      ImageId: ami-020db2c14939a8efb    # ubuntu 18.04 in region us-east-2
+      ImageId: ami-036d46416a34a611c    # ubuntu 20.04 in region us-west-2
       Tags:
         - Key: Name
           Value: !Sub ${EnvironmentName}-B
