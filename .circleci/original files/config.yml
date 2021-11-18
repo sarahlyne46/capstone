@@ -1,4 +1,4 @@
-vversion: 2.1
+version: 2.1
 
 orbs:
   aws-cli: circleci/aws-cli@2.0.3
@@ -9,13 +9,13 @@ orbs:
 parameters:
   DOCKER_PATH:
     type: string
-    default: "sarahlyne46/capstone-test"
+    default: "sarahlyne46/capstone_v3"
   DOCKER_IMAGE_NAME:
     type: string
-    default: "1811-test"
+    default: "capstone-1811-v2"
   ENV_NAME:
     type: string
-    default: "capstone-test"
+    default: "capstone-v4"
 
     
     
@@ -27,13 +27,13 @@ commands:
           name: Destroy environments
           command: |
             # Delete Servers stack
-            aws cloudformation delete-stack --stack-name {ENV_NAME}-servers --region us-west-2
+            aws cloudformation delete-stack --stack-name {ENV_NAME}-servers --region us-east-2
             # Delete Nodegroup stack
-            aws cloudformation delete-stack --stack-name {ENV_NAME}-nodegroup --region us-west-2
+            aws cloudformation delete-stack --stack-name {ENV_NAME}-nodegroup --region us-east-2
             # Delete Cluster stack
-            aws cloudformation delete-stack --stack-name {ENV_NAME}-cluster --region us-west-2
+            aws cloudformation delete-stack --stack-name {ENV_NAME}-cluster --region us-east-2
             # Delete Network stack
-            aws cloudformation delete-stack --stack-name {ENV_NAME}-network --region us-west-2     
+            aws cloudformation delete-stack --stack-name {ENV_NAME}-network --region us-east-2     
             
             
 jobs:
@@ -89,17 +89,17 @@ jobs:
           name: Build docker container
           command: |
           
-            docker build --cache-from=app -t $DOCKER_IMAGE_NAME .
+            docker build --cache-from=app -t capstone-app .
             docker image ls
             docker container ls
       
       - run:
           name: Upload Docker
           command: |
-            echo "Docker ID and Image: $DOCKER_IMAGE_NAME"
+            echo "Docker ID and Image: capstone-app"
             docker login -u="$DOCKERHUB_USERNAME" -p="$DOCKERHUB_PASSWORD"
-            docker tag $DOCKER_IMAGE_NAME $DOCKER_PATH:$DOCKER_IMAGE_NAME
-            docker push $DOCKER_PATH:$DOCKER_IMAGE_NAME
+            docker tag capstone-app $DOCKER_PATH:capstone-app
+            docker push $DOCKER_PATH:capstone-app
 
   deploy-infrastructure:
 
@@ -118,8 +118,8 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/eks-network.yml \
-              --stack-name "capstone-test-network" \
-              --region us-west-2 \
+              --stack-name "capstone-v4-network" \
+              --region us-east-2 \
               --parameter-overrides file://cloudformation/eks-network-param.json \
               --tags project=capstone-project
       - run:
@@ -128,22 +128,19 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/eks-cluster.yml \
-              --stack-name "capstone-test-cluster" \
-              --region us-west-2 \
-              --ssh-public-key capstone
+              --stack-name "capstone-v4-cluster" \
+              --region us-east-2 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/eks-cluster-param.json \
               --tags project=capstone-project \
-              --with-oidc 
-              --ssh-access
               --no-verify-ssl
       - run:
           name: Create Node group
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/nodes.yml \
-              --stack-name "capstone-test-nodegroup" \
-              --region us-west-2 \
+              --stack-name "capstone-v4-nodegroup" \
+              --region us-east-2 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/nodes-param.json \
               --tags project=capstone-project \
@@ -154,8 +151,8 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/servers.yml \
-              --stack-name "capstone-test-servers" \
-              --region us-west-2 \
+              --stack-name "capstone-v4-servers" \
+              --region us-east-2 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/servers-param.json \
               --tags project=capstone-project-servers \
@@ -165,11 +162,11 @@ jobs:
       - run:
           name: Get IP Addresses names
           command: |
-            echo [webservertest] > ~/inventory.txt
+            echo [webserver1] > ~/inventory.txt
             aws ec2 describe-instances \
-              --region us-west-2 \
+              --region us-east-2 \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=tag:Name,Values=capstone-test*" \
+              --filters "Name=tag:Name,Values=capstone-v4*" \
               --output text >> ~/inventory.txt
             cat ~/inventory.txt
       - persist_to_workspace:
@@ -296,21 +293,21 @@ workflows:
            filters:
              branches:
                only: [main]            
-       - deploy-infrastructure:
-           requires: [upload-docker]       
-           filters:
-             branches:
-               only: [main]           
-       - configure-infrastructure:
-           requires: [deploy-infrastructure]
-           filters:
-             branches:
-               only: [main]            
-       - configure-cluster:
-           requires: [configure-infrastructure]
-           filters:
-             branches:
-               only: [main]      
+#       - deploy-infrastructure:
+#           requires: [upload-docker]       
+#           filters:
+#             branches:
+#               only: [main]           
+#       - configure-infrastructure:
+#           requires: [deploy-infrastructure]
+#           filters:
+#             branches:
+#               only: [main]            
+#       - configure-cluster:
+#           requires: [configure-infrastructure]
+#           filters:
+#             branches:
+#               only: [main]      
 #       - deploy-code:
 #           requires: [configure-cluster]
 #           filters:

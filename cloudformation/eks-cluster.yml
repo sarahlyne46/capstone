@@ -9,7 +9,7 @@ Parameters:
     EnvironmentName:
         Description: An environment name that will be prefixed to resource names
         Type: String
-        Default: capstone-v4
+        Default: capstone-test
 
 Resources:
 
@@ -21,7 +21,7 @@ Resources:
             Roles:
               - !Ref EKSRole
 
-    EKSRole:
+    eksClusterRole:
         Type: AWS::IAM::Role
         Properties:
             AssumeRolePolicyDocument:
@@ -39,16 +39,17 @@ Resources:
               - arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
               - arn:aws:iam::aws:policy/AmazonEKSServicePolicy
               - arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess
+              - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
             Tags:
             - Key: Name
-              Value: !Sub ${EnvironmentName}-EKSRole
+              Value: !Sub ${EnvironmentName}-eksClusterRole
 
     EKSCluster:
         Type: AWS::EKS::Cluster
         Properties:
-          Version: "1.20"
+          Version: "1.21"
           Name: !Sub ${EnvironmentName}-cluster
-          RoleArn: !GetAtt EKSRole.Arn
+          RoleArn: !GetAtt eksClusterRole.Arn
           ResourcesVpcConfig:
             SecurityGroupIds:
               - Fn::ImportValue: !Sub ${EnvironmentName}-SecGroup
@@ -69,6 +70,6 @@ Outputs:
 
     EKSRoleArn:
         Description: Role for accessing and creating aws resources
-        Value: !GetAtt EKSRole.Arn
+        Value: !GetAtt eksClusterRole.Arn
         Export:
-            Name: !Sub ${EnvironmentName}-EKSRole                  
+            Name: !Sub ${EnvironmentName}-eksClusterRole           

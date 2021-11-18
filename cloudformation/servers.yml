@@ -6,13 +6,13 @@ Parameters:
     EnvironmentName:
         Description: An environment name that will be prefixed to resource names
         Type: String
-        Default: capstone-v4
+        Default: capstone-test
 
 Resources:
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupName: !Sub webserver1
+      GroupName: !Sub webservertest
       GroupDescription: Allow port 22
       SecurityGroupIngress:
         - IpProtocol: tcp

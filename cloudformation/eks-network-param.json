@@ -1,7 +1,7 @@
 [
     {
         "ParameterKey": "EnvironmentName",
-        "ParameterValue": "capstone-v4"
+        "ParameterValue": "capstone-test"
     },
     {
         "ParameterKey": "VpcCIDR",
