@@ -12,7 +12,7 @@ parameters:
     default: "sarahlyne46/capstone_v3"
   DOCKER_IMAGE_NAME:
     type: string
-    default: "capstone-1811-v1"
+    default: "capstone-1811-v2"
   ENV_NAME:
     type: string
     default: "capstone-v4"
@@ -88,7 +88,7 @@ jobs:
       - run:
           name: Build docker container
           command: |
-            docker build --tag=$DOCKER_IMAGE_NAME .
+            docker build . -t $DOCKER_IMAGE_NAME
             docker image ls
       
       - run:

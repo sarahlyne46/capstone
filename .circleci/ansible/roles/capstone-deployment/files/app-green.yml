@@ -19,3 +19,4 @@ spec:
           image: sarahlyne46/capstone_v3:capstone-1811
           ports:
             - containerPort: 80
+            - targetPort: 5000
