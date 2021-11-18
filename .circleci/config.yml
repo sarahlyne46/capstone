@@ -90,6 +90,7 @@ jobs:
           command: |
             docker build . -t $DOCKER_IMAGE_NAME
             docker image ls
+            docker container ls
       
       - run:
           name: Upload Docker
@@ -306,8 +307,8 @@ workflows:
            filters:
              branches:
                only: [main]      
-#       - deploy-code:
-#           requires: [configure-cluster]
-#           filters:
-#             branches:
-#               only: [main]
+       - deploy-code:
+           requires: [configure-cluster]
+           filters:
+#            branches:
+#              only: [main]

@@ -7,9 +7,20 @@
   shell: "./bin/kubectl apply -f app-blue.yml"
   args:
     chdir: $HOME
-- name: wait for 5 mins
-  shell: sleep 300
-  
+- name: wait for 2 mins
+  shell: sleep 120
+
+
+- name: Check docker setup
+  shell: "docker network ls"
+  args:
+    chdir: $HOME
+    
+- name: Check docker setup
+  shell: "docker container ls"
+  args:
+    chdir: $HOME    
+    
 - name: Check deployments
   shell: "./bin/kubectl get deployments"
   args:
