@@ -136,8 +136,6 @@ jobs:
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/eks-cluster-param.json \
               --tags project=capstone-project \
-              --with-oidc 
-              --ssh-access
               --no-verify-ssl
       - run:
           name: Create Node group
