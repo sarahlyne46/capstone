@@ -4,7 +4,7 @@
         "ParameterValue": "capstone-test"
     },
     {
-        "ParameterKey": "KeyPairName"
+        "ParameterKey": "KeyPairName",
         "ParameterValue": "capstone"
     }
 ]
