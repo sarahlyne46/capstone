@@ -88,17 +88,19 @@ jobs:
       - run:
           name: Build docker container
           command: |
-            docker build . -t $DOCKER_IMAGE_NAME
+          
+            docker build --cache-from=app -t capstone-app .
+            docker run --name capstone -p 5000:5000 capstone-app
             docker image ls
             docker container ls
       
       - run:
           name: Upload Docker
           command: |
-            echo "Docker ID and Image: $DOCKER_IMAGE_NAME"
+            echo "Docker ID and Image: capstone-app"
             docker login -u="$DOCKERHUB_USERNAME" -p="$DOCKERHUB_PASSWORD"
-            docker tag $DOCKER_IMAGE_NAME $DOCKER_PATH:$DOCKER_IMAGE_NAME
-            docker push $DOCKER_PATH:$DOCKER_IMAGE_NAME
+            docker tag capstone-app $DOCKER_PATH:capstone-app
+            docker push $DOCKER_PATH:capstone-app
 
   deploy-infrastructure:
 
@@ -292,23 +294,23 @@ workflows:
            filters:
              branches:
                only: [main]            
-       - deploy-infrastructure:
-           requires: [upload-docker]       
-           filters:
-             branches:
-               only: [main]           
-       - configure-infrastructure:
-           requires: [deploy-infrastructure]
-           filters:
-             branches:
-               only: [main]            
-       - configure-cluster:
-           requires: [configure-infrastructure]
-           filters:
-             branches:
-               only: [main]      
-       - deploy-code:
-           requires: [configure-cluster]
-           filters:
-             branches:
-               only: [main]
+#       - deploy-infrastructure:
+#           requires: [upload-docker]       
+#           filters:
+#             branches:
+#               only: [main]           
+#       - configure-infrastructure:
+#           requires: [deploy-infrastructure]
+#           filters:
+#             branches:
+#               only: [main]            
+#       - configure-cluster:
+#           requires: [configure-infrastructure]
+#           filters:
+#             branches:
+#               only: [main]      
+#       - deploy-code:
+#           requires: [configure-cluster]
+#           filters:
+#             branches:
+#               only: [main]
