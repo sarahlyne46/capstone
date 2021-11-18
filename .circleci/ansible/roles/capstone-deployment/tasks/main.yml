@@ -2,7 +2,12 @@
   copy:
     src: "app-blue.yml"
     dest: $HOME
-
+    
+- name: Apply deployment configuration
+  shell: "./bin/kubectl apply -f app-blue.yml"
+  args:
+    chdir: $HOME
+    
 - name: Check deployments
   shell: "./bin/kubectl get deployments"
   args:
@@ -20,10 +25,5 @@
     
 - name: Describe pods
   shell: "./bin/kubectl describe pods"
-  args:
-    chdir: $HOME
-    
-- name: Apply deployment configuration
-  shell: "./bin/kubectl apply -f app-blue.yml"
   args:
     chdir: $HOME

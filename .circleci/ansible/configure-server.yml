@@ -1,6 +1,6 @@
 ---
 - name: "Install dependencies"
-  hosts: webserver1811
+  hosts: webserver1
   user: ubuntu
   gather_facts: false
   become: yes
@@ -20,7 +20,7 @@
     - install-kubectl
 
 - name: "Authenticate AWS CLI with AWS"
-  hosts: webserver1811
+  hosts: webserver1
   user: ubuntu
   gather_facts: false
   become: yes
@@ -37,7 +37,7 @@
       shell: "aws configure set default.region {{ AWS_DEFAULT_REGION }}"
 
 - name: "Fetch kubectl config"
-  hosts: webserver1811
+  hosts: webserver1
   user: ubuntu
   gather_facts: false
   become: yes
@@ -46,4 +46,4 @@
     ENVIRONMENT_NAME: "{{ lookup('env', 'ENVIRONMENT_NAME') }}"
   pre_tasks:
     - name: Create a kubeconfig file for the cluster
-      shell: "aws eks update-kubeconfig --region us-east-2 --name capstone-v3-cluster"
+      shell: "aws eks update-kubeconfig --region us-east-2 --name capstone-v4-cluster"

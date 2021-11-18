@@ -1,5 +1,4 @@
-[
-  "EnvironmentName=capstone-v3",
+[ "EnvironmentName=capstone-v4",
   "MinSize=2",
   "MaxSize=6",
   "DesiredSize=4",

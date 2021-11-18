@@ -12,10 +12,10 @@ parameters:
     default: "sarahlyne46/capstone_v3"
   DOCKER_IMAGE_NAME:
     type: string
-    default: "capstone-1811"
+    default: "capstone-1811-v1"
   ENV_NAME:
     type: string
-    default: "capstone-v1"
+    default: "capstone-v4"
 
     
     
@@ -116,7 +116,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/eks-network.yml \
-              --stack-name "capstone-v3-network" \
+              --stack-name "capstone-v4-network" \
               --region us-east-2 \
               --parameter-overrides file://cloudformation/eks-network-param.json \
               --tags project=capstone-project
@@ -126,7 +126,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/eks-cluster.yml \
-              --stack-name "capstone-v3-cluster" \
+              --stack-name "capstone-v4-cluster" \
               --region us-east-2 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/eks-cluster-param.json \
@@ -137,7 +137,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/nodes.yml \
-              --stack-name "capstone-v3-nodegroup" \
+              --stack-name "capstone-v4-nodegroup" \
               --region us-east-2 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/nodes-param.json \
@@ -149,7 +149,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/servers.yml \
-              --stack-name "capstone-v3-servers" \
+              --stack-name "capstone-v4-servers" \
               --region us-east-2 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/servers-param.json \
@@ -160,11 +160,11 @@ jobs:
       - run:
           name: Get IP Addresses names
           command: |
-            echo [webserver1811] > ~/inventory.txt
+            echo [webserver1] > ~/inventory.txt
             aws ec2 describe-instances \
               --region us-east-2 \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=tag:Name,Values=capstone-v3*" \
+              --filters "Name=tag:Name,Values=capstone-v4*" \
               --output text >> ~/inventory.txt
             cat ~/inventory.txt
       - persist_to_workspace:
