@@ -285,8 +285,8 @@ workflows:
     jobs:
        - build:
            filters:
-            branches:
-              only: [main]   
+             branches:
+               only: [main]   
        - upload-docker:
            requires: [build]
            filters:
@@ -295,8 +295,8 @@ workflows:
        - deploy-infrastructure:
            requires: [upload-docker]       
            filters:
-            branches:
-              only: [main]           
+             branches:
+               only: [main]           
        - configure-infrastructure:
            requires: [deploy-infrastructure]
            filters:
@@ -310,5 +310,5 @@ workflows:
        - deploy-code:
            requires: [configure-cluster]
            filters:
-#            branches:
-#              only: [main]
+             branches:
+               only: [main]
