@@ -221,7 +221,7 @@ workflows:
            requires: [upload-docker]
        - check-cluster:
            cluster-name: capstone-project
-           requires: [upload-docker]
+           requires: [create-infrastructure]
        - deploy-code:
            cluster-name: capstone-project
            requires: [check-cluster]
