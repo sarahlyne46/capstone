@@ -155,205 +155,91 @@ jobs:
             
             
             
-
-  deploy-infrastructure:
-
-    docker:
-      - image: amazon/aws-cli
-
+  check-cluster:
+    executor: aws-eks/python3
+    parameters:
+      cluster-name:
+        description: |
+          Name of the EKS cluster
+        type: string
     steps:
-      - checkout
-
+      - kubernetes/install
+      - aws-eks/update-kubeconfig-with-authenticator:
+          cluster-name: << parameters.cluster-name >>
       - run:
-          name: Install dependencies
-          command: yum install -y tar gzip
-
-      - run:
-          name: Create EKS Network
+          name: Kube cluster
           command: |
-            aws cloudformation deploy \
-              --template-file cloudformation/eks-network.yml \
-              --stack-name "capstone-test2211-network" \
-              --region us-west-2 \
-              --parameter-overrides file://cloudformation/eks-network-param.json \
-              --tags project=capstone-project
-      - run:
-          name: Create EKS Cluster
-          no_output_timeout: 30m          
-          command: |
-            aws cloudformation deploy \
-              --template-file cloudformation/eks-cluster.yml \
-              --stack-name "capstone-test2211-cluster" \
-              --region us-west-2 \
-              --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
-              --parameter-overrides file://cloudformation/eks-cluster-param.json \
-              --tags project=capstone-project \
-              --no-verify-ssl
-      - run:
-          name: Create Node group
-          command: |
-            aws cloudformation deploy \
-              --template-file cloudformation/nodes.yml \
-              --stack-name "capstone-test2211-nodegroup" \
-              --region us-west-2 \
-              --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
-              --parameter-overrides file://cloudformation/nodes-param.json \
-              --tags project=capstone-project \
-              --no-verify-ssl
-                                                                            
-      - run:
-          name: Create servers
-          command: |
-            aws cloudformation deploy \
-              --template-file cloudformation/servers.yml \
-              --stack-name "capstone-test2211-servers" \
-              --region us-west-2 \
-              --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
-              --parameter-overrides file://cloudformation/servers-param.json \
-              --tags project=capstone-project-servers \
-              --no-verify-ssl \
-              --output text >> ~/servers.txt
-            cat ~/servers.txt
-      - run:
-          name: Get IP Addresses names
-          command: |
-            echo [webserver2211] > ~/inventory.txt
-            aws ec2 describe-instances \
-              --region us-west-2 \
-              --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=tag:Name,Values=capstone-test2211*" \
-              --output text >> ~/inventory.txt
-            cat ~/inventory.txt
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - inventory.txt
-            - servers.txt                   
-#      - delete-environment
-
-  configure-infrastructure:
-    docker:
-      - image: python:3.7-alpine3.11
-    environment:
-      ANSIBLE_HOST_KEY_CHECKING: "false"      
-    steps:
-      - checkout
-      - add_ssh_keys:
-          fingerprints: ["b9:5c:fa:29:02:77:ba:98:5a:ed:4f:bb:e5:0b:2e:2c"]
-      - attach_workspace:
-          at: ~/
-      - run:
-          name: update pip
-          command: |
-            /usr/local/bin/python -m pip install --upgrade pip
-      - run:            
-          name: Install dependencies
-          command: |
-            apk add --update tar gzip ansible nodejs npm curl
-            pip install awscli
-      - run:
-          name: check inventory file
-          command: |
-            cat ~/inventory.txt
-      - run:
-          name: configure server
-          no_output_timeout: 30m
-          command: |
-            cat ~/servers.txt
-            cat ~/inventory.txt
-            cd .circleci/ansible
-            ansible-playbook -i ~/inventory.txt -vvv configure-server.yml
-#      - delete-environment
-
-  configure-cluster:
-    docker:
-      - image: python:3.7-alpine3.11
-    environment:
-      ANSIBLE_HOST_KEY_CHECKING: "false"      
-    steps:
-      - checkout
-      - add_ssh_keys:
-          fingerprints: ["b9:5c:fa:29:02:77:ba:98:5a:ed:4f:bb:e5:0b:2e:2c"]      
-      - attach_workspace:
-          at: ~/
-      - run:
-          name: Install dependencies
-          command: |
-            apk add --update tar gzip ansible nodejs npm curl
-            pip install awscli
-      - run:
-          name: check inventory file
-          command: |
-            cat ~/inventory.txt
-      - run:
-          name: configure server
-          no_output_timeout: 30m
-          command: |
-             echo $PWD
-             cd .circleci/ansible
-             echo $PWD
-             ansible-playbook -i ~/inventory.txt -vvv configure-cluster.yml
-      - run:
-          name: Wait for LoadBalancer's domain to become reachable
-          command: |
-            cat ~/inventory.txt
-            echo "Wait 60 seconds..."
-            sleep 60
+            kubectl get services
             
-      - run:
-          name: Get LoadBalancer DNS 
-          command: |
-            cat ~/inventory.txt
-            cd .circleci/ansible
-            ansible-playbook -i ~/inventory.txt -vvv get_dns.yml
-            cat ~/elb_dns.txt
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - elb_dns.txt
-#      - delete-environment  
-          
+            
   deploy-code:
-    docker:
-      - image: python:3.7-alpine3.11
+    executor: aws-eks/python3
+    parameters:
+      cluster-name:
+        description: |
+          Name of the EKS cluster
+        type: string
+
     steps:
       - checkout
-      - add_ssh_keys:
-          fingerprints: ["b9:5c:fa:29:02:77:ba:98:5a:ed:4f:bb:e5:0b:2e:2c"]      
-      - attach_workspace:
-          at: ~/
+      - aws-eks/update-kubeconfig-with-authenticator:
+          cluster-name: << parameters.cluster-name >>
+          install-kubectl: true
+      - kubernetes/create-or-update-resource:
+          get-rollout-status: true
+          resource-file-path: deployment.yml
+          resource-name: deployment/capstone-project-deployment            
+
+  test-deployment:
+    executor: aws-eks/python3
+    parameters:
+      cluster-name:
+        description: |
+          Name of the EKS cluster
+        type: string
+    steps:
+      - kubernetes/install
+      - aws-eks/update-kubeconfig-with-authenticator:
+          cluster-name: << parameters.cluster-name >>
       - run:
-          name: Install dependencies
+          name: Kube cluster
           command: |
-            apk add --update ansible
-      - run:
-          name: deploy updated docker version
-          no_output_timeout: 30m
-          command: |
-             echo $PWD
-             cd .circleci/ansible
-             echo $PWD
-             ansible-playbook -i ~/inventory.txt -vv deploy-green.yml
-#      - delete-environment
+            kubectl get svc
+            kubectl get nodes
+            kubectl get deployment
+            
+
 
 workflows:
   default:
     jobs:
-       - build:
-           filters:
-             branches:
-               only: [main]   
+       - build
        - upload-docker:
            requires: [build]
-           filters:
-             branches:
-               only: [main]
-       - create-infrastructure:
+#       - create-infrastructure:
+#           cluster-name: sarah-2211
+#           requires: [upload-docker]
+       - check-cluster:
            cluster-name: sarah-2211
            requires: [upload-docker]
-           filters:
-             branches:
-               only: [main]
+       - deploy-code:
+           cluster-name: sarah-2211
+           requires: [check-clusterr]
+       - test-deployment:
+           cluster-name: sarah-2211
+           requires: [deploy-code]
+#       - aws-eks/update-container-image:
+#           cluster-name: siva-capstone
+#           container-image-updates: 'siva-capstone-deployment=dockerbeginnersiva/project6:4.0'
+#           get-rollout-status: true
+#           record: true
+#           requires: [test-deployment]
+#           resource-name: deployment/capstone-project-deployment        
+
+#      - aws-eks/delete-cluster:
+#          cluster-name: sarah-2211
+#          requires:
+#            - aws-eks/update-container-image           
 #       - deploy-infrastructure:
 #           requires: [upload-docker]       
 #           filters:
