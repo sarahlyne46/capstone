@@ -12,7 +12,7 @@ Resources:
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupName: !Sub webservertest
+      GroupName: !Sub webserver2211
       GroupDescription: Allow port 22
       SecurityGroupIngress:
         - IpProtocol: tcp
