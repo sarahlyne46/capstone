@@ -210,7 +210,7 @@ jobs:
             cat ~/servers.txt
             cat ~/inventory.txt
             cd .circleci/ansible
-            ansible-playbook -i ~/inventory.txt -vv configure-server.yml
+            ansible-playbook -i ~/inventory.txt -vvv configure-server.yml
 #      - delete-environment
 
   configure-cluster:
@@ -240,7 +240,7 @@ jobs:
              echo $PWD
              cd .circleci/ansible
              echo $PWD
-             ansible-playbook -i ~/inventory.txt -vv configure-cluster.yml
+             ansible-playbook -i ~/inventory.txt -vvv configure-cluster.yml
       - run:
           name: Wait for LoadBalancer's domain to become reachable
           command: |
@@ -253,7 +253,7 @@ jobs:
           command: |
             cat ~/inventory.txt
             cd .circleci/ansible
-            ansible-playbook -i ~/inventory.txt -vv get_dns.yml
+            ansible-playbook -i ~/inventory.txt -vvv get_dns.yml
             cat ~/elb_dns.txt
       - persist_to_workspace:
           root: ~/

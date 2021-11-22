@@ -12,7 +12,7 @@
   shell: sleep 120
   
   
-- name: check elb setup
-  command: kubectl describe service my-elb-service
+- name: Describe pods
+  shell: "./bin/kubectl describe service my-elb-service"
   args:
     chdir: $HOME
