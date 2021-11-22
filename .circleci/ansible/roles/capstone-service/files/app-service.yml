@@ -4,7 +4,7 @@ metadata:
   name: capstone-project-service
 spec:
   selector:
-    app: capstone-project-app
+    app: app
   ports:
   - name: http
     port: 80
