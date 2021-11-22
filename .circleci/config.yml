@@ -97,11 +97,11 @@ jobs:
       - run:
           name: Test docker container
           command: |
-            docker run -p 5001:5000 --name testapp $DOCKER_IMAGE_NAME
+            docker run -d --rm --name testapp -p 8081:8080 $DOCKER_IMAGE_NAME
             sleep 5
             docker container ls
             docker-machine ip default
-            export URL="http://192.168.99.100:5001"
+            export URL="http://localhost:8081"
             export response=$(curl -s $URL)
             echo "This is the response from local host $response"
             sleep 10
