@@ -100,9 +100,9 @@ jobs:
             docker run -d --rm --name testapp -p 5001:5000 $DOCKER_IMAGE_NAME
             sleep 5
             docker container ls
-            export URL="http://localhost:5001
-            export response=$(curl  -s $URL)
-            echo "This is the response from local host: $response"
+            export URL="http://localhost:5001"
+            export response=$(curl -s $URL)
+            echo "This is the response from local host $response"
             docker stop testapp
       
       - run:
