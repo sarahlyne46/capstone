@@ -3,10 +3,11 @@ kind: Service
 metadata:
   name: capstone-project-service
 spec:
-  type: LoadBalancer
   selector:
-    run: capstone-project-app
+    app: capstone-project-app
   ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 5000
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 9376
+  type: LoadBalancer

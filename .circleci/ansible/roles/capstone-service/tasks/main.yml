@@ -7,3 +7,12 @@
   command: "./bin/kubectl apply -f app-service.yml"
   args:
     chdir: $HOME   
+    
+- name: wait for 2 mins
+  shell: sleep 120
+  
+  
+- name: check elb setup
+  command: kubectl describe service my-elb-service
+  args:
+    chdir: $HOME

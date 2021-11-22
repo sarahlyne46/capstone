@@ -16,7 +16,6 @@ spec:
     spec:
       containers:
         - name: capstone-project-app
-          image: sarahlyne46/capstone-test:1811-test
+          image: sarahlyne46/capstone-test:2211-test
           ports:
             - containerPort: 80
-            - targetPort: 5000

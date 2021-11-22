@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: capstone-project-app
-          image: sarahlyne46/capstone-test:latest
+          image: sarahlyne46/capstone-test2211:latest
           ports:
             - containerPort: 80

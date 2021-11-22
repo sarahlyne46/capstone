@@ -12,10 +12,10 @@ parameters:
     default: "sarahlyne46/capstone-test"
   DOCKER_IMAGE_NAME:
     type: string
-    default: "1811-test"
+    default: "2211-test"
   ENV_NAME:
     type: string
-    default: "capstone-test"
+    default: "capstone-test2211"
   KEY_PAIR:
     type: string
     default: "capstone"
@@ -121,7 +121,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/eks-network.yml \
-              --stack-name "capstone-test-network" \
+              --stack-name "capstone-test2211-network" \
               --region us-west-2 \
               --parameter-overrides file://cloudformation/eks-network-param.json \
               --tags project=capstone-project
@@ -131,7 +131,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/eks-cluster.yml \
-              --stack-name "capstone-test-cluster" \
+              --stack-name "capstone-test2211-cluster" \
               --region us-west-2 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/eks-cluster-param.json \
@@ -142,7 +142,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/nodes.yml \
-              --stack-name "capstone-test-nodegroup" \
+              --stack-name "capstone-test2211-nodegroup" \
               --region us-west-2 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/nodes-param.json \
@@ -154,7 +154,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file cloudformation/servers.yml \
-              --stack-name "capstone-test-servers" \
+              --stack-name "capstone-test2211-servers" \
               --region us-west-2 \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides file://cloudformation/servers-param.json \
@@ -169,7 +169,7 @@ jobs:
             aws ec2 describe-instances \
               --region us-west-2 \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=tag:Name,Values=capstone-test*" \
+              --filters "Name=tag:Name,Values=capstone-test2211*" \
               --output text >> ~/inventory.txt
             cat ~/inventory.txt
       - persist_to_workspace:
@@ -210,7 +210,7 @@ jobs:
             cat ~/servers.txt
             cat ~/inventory.txt
             cd .circleci/ansible
-            ansible-playbook -i ~/inventory.txt -vvv configure-server.yml
+            ansible-playbook -i ~/inventory.txt -vv configure-server.yml
 #      - delete-environment
 
   configure-cluster:
@@ -240,7 +240,7 @@ jobs:
              echo $PWD
              cd .circleci/ansible
              echo $PWD
-             ansible-playbook -i ~/inventory.txt -vvv configure-cluster.yml
+             ansible-playbook -i ~/inventory.txt -vv configure-cluster.yml
       - run:
           name: Wait for LoadBalancer's domain to become reachable
           command: |
@@ -253,7 +253,7 @@ jobs:
           command: |
             cat ~/inventory.txt
             cd .circleci/ansible
-            ansible-playbook -i ~/inventory.txt -vvv get_dns.yml
+            ansible-playbook -i ~/inventory.txt -vv get_dns.yml
             cat ~/elb_dns.txt
       - persist_to_workspace:
           root: ~/
@@ -281,7 +281,7 @@ jobs:
              echo $PWD
              cd .circleci/ansible
              echo $PWD
-             ansible-playbook -i ~/inventory.txt -vvv deploy-green.yml
+             ansible-playbook -i ~/inventory.txt -vv deploy-green.yml
 #      - delete-environment
 
 workflows:

@@ -13,7 +13,7 @@ Parameters:
     EnvironmentName:
         Description: An environment name that will be prefixed to resource names
         Type: String
-        Default: capstone-test
+        Default: capstone-test2211
 
     VpcCIDR: 
         Description: IP range (CIDR notation) for the VPC
@@ -68,6 +68,7 @@ Resources:
             Tags: 
                 - Key: Name 
                   Value: !Sub ${EnvironmentName} Public Subnet (AZ1)
+
 
     PublicSubnet2: 
         Type: AWS::EC2::Subnet
