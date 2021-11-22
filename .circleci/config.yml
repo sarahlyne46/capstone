@@ -100,7 +100,7 @@ jobs:
             docker run -d --rm --name testapp -p 8081:8080 $DOCKER_IMAGE_NAME
             sleep 5
             docker container ls
-            export URL="http://http://172.17.0.2:8081"
+            export URL="http://172.17.0.2:8081"
             export response=$(curl -s $URL)
             echo "This is the response from local host $response"
             sleep 10
