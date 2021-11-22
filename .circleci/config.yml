@@ -2,8 +2,8 @@ version: 2.1
 
 orbs:
   aws-cli: circleci/aws-cli@2.0.3
-  aws-eks: circleci/aws-eks@1.1.0
-  kubernetes: circleci/kubernetes@0.4.0  
+  aws-eks: circleci/aws-eks@0.2.3
+  kubernetes: circleci/kubernetes@0.12.0  
 #  slack: circleci/slack@4.2.1https://github.com/sarahlyne46/capstone/tree/sarahlyne46-cap1-ubuntu
 
 parameters:
@@ -12,10 +12,10 @@ parameters:
     default: "sarahlyne46/capstone-test"
   DOCKER_IMAGE_NAME:
     type: string
-    default: "2211-test"
+    default: "2211-new"
   ENV_NAME:
     type: string
-    default: "capstone-test2211"
+    default: "capstone-2211"
   KEY_PAIR:
     type: string
     default: "capstone"
@@ -97,11 +97,10 @@ jobs:
       - run:
           name: Test docker container
           command: |
-            netstat -tlpen | grep 8080
             docker run -d --rm --name testapp -p 8081:8080 $DOCKER_IMAGE_NAME
             sleep 5
             docker container ls
-            export URL="http://localhost:8081"
+            export URL="http://http://172.17.0.2:8081"
             export response=$(curl -s $URL)
             echo "This is the response from local host $response"
             sleep 10
@@ -114,6 +113,48 @@ jobs:
             docker login -u="$DOCKERHUB_USERNAME" -p="$DOCKERHUB_PASSWORD"
             docker tag $DOCKER_IMAGE_NAME $DOCKER_PATH:$DOCKER_IMAGE_NAME
             docker push $DOCKER_PATH:$DOCKER_IMAGE_NAME
+ 
+            
+  create-infrastructure:
+    executor: awk-eks/python3
+    parameters:
+      cluster-name:
+        description: | 
+          Name of the EKS cluster
+        type: string
+
+    steps:
+      - checkout
+      
+      - aws-eks/install-aws-iam-authenticator:
+          release-tag: ''
+      - run:
+          name: Install the eksctl tool
+          command: |
+            if which eksctl > /dev/null; then
+            echo "eksctl is already installed"
+            exit 0
+            fi
+            mkdir -p eksctl_download
+            curl --location --retry 5 "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C eksctl_download
+            chmod +x eksctl_download/eksctl
+            SUDO=""
+            if [ $(id -u) -ne 0 ] && which sudo > /dev/null ; then
+            SUDO="sudo"
+            fi
+            $SUDO mv eksctl_download/eksctl /usr/local/bin/
+            rmdir eksctl_download
+      - aws-eks/create-cluster:
+          cluster-name: << parameters.cluster-name >>
+          skip-kubectl-install: false
+          verbose: 3
+          node-type: t2.small
+          nodes-max: 2
+          ssh-access: false
+          ssh-public-key: ''         
+            
+            
+            
 
   deploy-infrastructure:
 
@@ -306,7 +347,13 @@ workflows:
            requires: [build]
            filters:
              branches:
-               only: [main]            
+               only: [main]
+       - create-infrastructure:
+           cluster-name: sarah-2211
+           requires: [upload-docker]
+           filters:
+             branches:
+               only: [main]
 #       - deploy-infrastructure:
 #           requires: [upload-docker]       
 #           filters:
