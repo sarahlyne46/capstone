@@ -101,8 +101,10 @@ jobs:
             sleep 5
             docker container ls
             export URL="http://localhost:5001"
+            curl $URL
             export response=$(curl -s $URL)
             echo "This is the response from local host $response"
+            sleep 10
             docker stop testapp
       
       - run:
