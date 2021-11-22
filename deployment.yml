@@ -17,7 +17,7 @@ spec:
       containers:
         - name: capstone-project-deployment
           image: sarahlyne46/capstone-test:1811-test
-          inagePullPolicy: Always
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
             
