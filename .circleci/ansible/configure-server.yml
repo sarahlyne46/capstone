@@ -49,4 +49,4 @@
       shell: "aws eks update-kubeconfig --region us-west-2 --name capstone-test2211-cluster"
 
 - name: wait for 5 minutes to set new tags
-  command: sleep 300
+  shell: sleep 300
