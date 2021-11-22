@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: capstone-deployment
+  name: capstone-test-deployment
   labels:
     app: app
 spec:
@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: app
-          image: 1811-test:latest
+          image: 1811-test
           ports:
             - containerPort: 80

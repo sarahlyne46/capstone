@@ -94,7 +94,7 @@ jobs:
           
             docker build -t $DOCKER_IMAGE_NAME .
             docker image ls
-            docker container ls
+            docker pods ls
       
       - run:
           name: Upload Docker
