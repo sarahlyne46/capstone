@@ -3,19 +3,19 @@ kind: Deployment
 metadata:
   name: capstone-project-deployment
   labels:
-    app: app
+    app: capstone-project-app
 spec:
   replicas: 4
   selector:
     matchLabels:
-      app: app
+      app: capstone-project-app
   template:
     metadata:
       labels:
-        app: app
+        app: capstone-project-app
     spec:
       containers:
-        - name: app
-          image: 1811-test
+        - name: capstone-project-app
+          image: sarahlyne46/capstone-test:1811-test
           ports:
             - containerPort: 80
