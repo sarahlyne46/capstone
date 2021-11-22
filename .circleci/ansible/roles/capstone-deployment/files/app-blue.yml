@@ -3,19 +3,27 @@ kind: Deployment
 metadata:
   name: capstone-project-deployment
   labels:
-    app: capstone-project-app
+    app: capstone-project-deployment
 spec:
   replicas: 4
   selector:
     matchLabels:
-      app: capstone-project-app
+      app: capstone-project-deployment
   template:
     metadata:
       labels:
-        app: capstone-project-app
+        app: capstone-project-deployment
     spec:
       containers:
-        - name: capstone-project-app
+        - name: capstone-project-deployment
           image: sarahlyne46/capstone-test:1811-test
+          inagePullPolicy: Always
           ports:
-            - containerPort: 80
+            - containerPort: 5000
+            
+---
+
+
+
+
+            

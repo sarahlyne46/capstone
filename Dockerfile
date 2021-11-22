@@ -4,11 +4,11 @@ FROM python:3.7.3-stretch
 # Create a working directory
 WORKDIR /app
 
-EXPOSE 5000
-ENV FLASK_APP=app.py
-
 COPY . /app
-RUN pip install -r requirements.txt
 
-ENTRYPOINT [ "flask"]
-CMD [ "run", "--host", "0.0.0.0" ]
+RUN pip install --upgrade pip &&\
+    pip install --trusted-host pypi.python.org -r requirements.txt
+    
+EXPOSE 5000
+
+CMD ["python", "app.py"]

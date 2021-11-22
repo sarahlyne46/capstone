@@ -4,9 +4,8 @@ from flask import Flask
 app = Flask(__name__)
 
 @app.route("/")
-def home():
-    html = "<h3>This is a test for Capstone project</h3>"
-    return html.format(format)
+def index():
+    return "This is a test for Capstone project"
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True) # specify port=80
+    app.run(host='0.0.0.0', port=5000, debug=True)

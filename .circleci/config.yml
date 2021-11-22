@@ -94,9 +94,19 @@ jobs:
           
             docker build -t $DOCKER_IMAGE_NAME .
             docker image ls
+      - run:
+          name: Test docker container
+          command: |
+            docker run -d --rm --name testapp -p 5001:5000 $DOCKER_IMAGE_NAME
+            sleep 5
+            docker container ls
+            export URL="http://localhost:5001
+            export response=$(curl  -s $URL)
+            echo "This is the response from local host: $response"
+            docker stop testapp
       
       - run:
-          name: Upload Docker
+          name: Upload docker container
           command: |
             echo "Docker ID and Image: $DOCKER_IMAGE_NAME"
             docker login -u="$DOCKERHUB_USERNAME" -p="$DOCKERHUB_PASSWORD"
@@ -295,21 +305,21 @@ workflows:
            filters:
              branches:
                only: [main]            
-       - deploy-infrastructure:
-           requires: [upload-docker]       
-           filters:
-             branches:
-               only: [main]           
-       - configure-infrastructure:
-           requires: [deploy-infrastructure]
-           filters:
-             branches:
-               only: [main]            
-       - configure-cluster:
-           requires: [configure-infrastructure]
-           filters:
-             branches:
-               only: [main]      
+#       - deploy-infrastructure:
+#           requires: [upload-docker]       
+#           filters:
+#             branches:
+#               only: [main]           
+#       - configure-infrastructure:
+#           requires: [deploy-infrastructure]
+#           filters:
+#             branches:
+#               only: [main]            
+#       - configure-cluster:
+#           requires: [configure-infrastructure]
+#           filters:
+#             branches:
+#               only: [main]      
 #       - deploy-code:
 #           requires: [configure-cluster]
 #           filters:
