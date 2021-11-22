@@ -224,7 +224,7 @@ workflows:
            requires: [upload-docker]
        - deploy-code:
            cluster-name: sarah-2211
-           requires: [check-clusterr]
+           requires: [check-cluster]
        - test-deployment:
            cluster-name: sarah-2211
            requires: [deploy-code]
