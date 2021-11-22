@@ -22,22 +22,6 @@ parameters:
 
     
     
-commands:
-  delete-environment:
-    description: Destroy cloudformation stacks given a workflow ID.
-    steps:
-      - run:
-          name: Destroy environments
-          command: |
-            # Delete Servers stack
-            aws cloudformation delete-stack --stack-name {ENV_NAME}-servers --region us-west-2
-            # Delete Nodegroup stack
-            aws cloudformation delete-stack --stack-name {ENV_NAME}-nodegroup --region us-west-2
-            # Delete Cluster stack
-            aws cloudformation delete-stack --stack-name {ENV_NAME}-cluster --region us-west-2
-            # Delete Network stack
-            aws cloudformation delete-stack --stack-name {ENV_NAME}-network --region us-west-2     
-            
             
 jobs:
   build:
@@ -216,25 +200,25 @@ workflows:
        - build
        - upload-docker:
            requires: [build]
-       - create-infrastructure:
-           cluster-name: capstone-project
-           requires: [upload-docker]
+#       - create-infrastructure:
+#           cluster-name: capstone-project
+#           requires: [upload-docker]
        - check-cluster:
            cluster-name: capstone-project
-           requires: [create-infrastructure]
+           requires: [upload-docker]
        - deploy-code:
            cluster-name: capstone-project
            requires: [check-cluster]
        - test-deployment:
            cluster-name: capstone-project
            requires: [deploy-code]
-#       - aws-eks/update-container-image:
-#           cluster-name: siva-capstone
-#           container-image-updates: 'siva-capstone-deployment=dockerbeginnersiva/project6:4.0'
-#           get-rollout-status: true
-#           record: true
-#           requires: [test-deployment]
-#           resource-name: deployment/capstone-project-deployment        
+       - aws-eks/update-container-image:
+           cluster-name: siva-capstone
+           container-image-updates: 'sarahlyne46/capstone-project:capstone'
+           get-rollout-status: true
+           record: true
+           requires: [test-deployment]
+           resource-name: deployment/capstone-project-deployment        
 
 #      - aws-eks/delete-cluster:
 #          cluster-name: sarah-2211
