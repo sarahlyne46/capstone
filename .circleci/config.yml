@@ -9,13 +9,13 @@ orbs:
 parameters:
   DOCKER_PATH:
     type: string
-    default: "sarahlyne46/capstone-test"
+    default: "sarahlyne46/capstone-project"
   DOCKER_IMAGE_NAME:
     type: string
-    default: "2211-new"
+    default: "capstone"
   ENV_NAME:
     type: string
-    default: "capstone-2211"
+    default: "capstone-project"
   KEY_PAIR:
     type: string
     default: "capstone"
@@ -216,17 +216,17 @@ workflows:
        - build
        - upload-docker:
            requires: [build]
-#       - create-infrastructure:
-#           cluster-name: sarah-2211
-#           requires: [upload-docker]
+       - create-infrastructure:
+           cluster-name: capstone-project
+           requires: [upload-docker]
        - check-cluster:
-           cluster-name: sarah-2211
+           cluster-name: capstone-project
            requires: [upload-docker]
        - deploy-code:
-           cluster-name: sarah-2211
+           cluster-name: capstone-project
            requires: [check-cluster]
        - test-deployment:
-           cluster-name: sarah-2211
+           cluster-name: capstone-project
            requires: [deploy-code]
 #       - aws-eks/update-container-image:
 #           cluster-name: siva-capstone
