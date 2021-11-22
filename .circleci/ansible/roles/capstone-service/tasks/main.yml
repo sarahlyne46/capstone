@@ -8,11 +8,11 @@
   args:
     chdir: $HOME   
     
-- name: wait for 2 mins
-  shell: sleep 120
+- name: wait for 30 mins
+  shell: sleep 30
   
   
 - name: Describe pods
-  shell: "./bin/kubectl describe service my-elb-service"
+  shell: "./bin/kubectl describe service capstone-project-service"
   args:
     chdir: $HOME
