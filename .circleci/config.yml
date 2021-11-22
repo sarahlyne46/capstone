@@ -116,7 +116,7 @@ jobs:
  
             
   create-infrastructure:
-    executor: awk-eks/python3
+    executor: aws-eks/python3
     parameters:
       cluster-name:
         description: | 
