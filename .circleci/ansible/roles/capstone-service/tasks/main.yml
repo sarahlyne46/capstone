@@ -8,7 +8,7 @@
   args:
     chdir: $HOME   
     
-- name: wait for 30 mins
+- name: wait for 30 secs
   shell: sleep 30
   
   
