@@ -213,7 +213,7 @@ workflows:
            cluster-name: capstone-project
            requires: [deploy-code]
        - aws-eks/update-container-image:
-           cluster-name: siva-capstone
+           cluster-name: capstone-project
            container-image-updates: 'sarahlyne46/capstone-project:capstone'
            get-rollout-status: true
            record: true
