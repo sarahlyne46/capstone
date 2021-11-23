@@ -18,12 +18,9 @@ parameters:
   KEY_PAIR:
     type: string
     default: "capstone"
-  IMAGE_PATH:
+  IMAGE_NAME:
     type: string
-    default: "sarahlyne46/capstone-project"
-  IMAGE_VERSION:
-    type: string
-    default: "blue"
+    default: "sarahlyne46/capstone-project:blue"
 
     
     
@@ -85,12 +82,12 @@ jobs:
           name: Build docker container
           command: |
           
-            docker build -t $IMAGE_PATH:$IMAGE_VERSION .
+            docker build -t $IMAGE_NAME .
             docker image ls
       - run:
           name: Test docker container
           command: |
-            docker run -d --rm --name testapp -p 8081:8080 $IMAGE_PATH:$IMAGE_VERSION
+            docker run -d --rm --name testapp -p 8081:8080 $IMAGE_NAME
             sleep 5
             docker container ls
             docker stop testapp
@@ -98,7 +95,7 @@ jobs:
           name: Upload docker container
           command: |
             docker login -u="$DOCKERHUB_USERNAME" -p="$DOCKERHUB_PASSWORD"
-            docker push $IMAGE_PATH:$IMAGE_VERSION
+            docker push $IMAGE_NAME
             
   create-infrastructure:
     executor: aws-eks/python3
