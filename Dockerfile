@@ -11,4 +11,4 @@ RUN pip install --upgrade pip &&\
     
 EXPOSE 8080
 
-CMD ["python", "greenapp.py"]
+CMD ["python", "blueapp.py"]

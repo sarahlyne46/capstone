@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: capstone-project-deployment
-          image: sarahlyne46/capstone-project:green
+          image: sarahlyne46/capstone-project:bluev2
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
