@@ -75,7 +75,10 @@ jobs:
       
       - setup_remote_docker:
           version: 19.03.13
-
+      - run:
+          name: Remove old docker container
+          command: |
+            docker rm -f capstone
       - run:
           name: Build docker container
           command: |
