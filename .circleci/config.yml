@@ -75,6 +75,11 @@ jobs:
       
       - setup_remote_docker:
           version: 19.03.13
+      - run:          
+          name: check container version
+          command: |
+            docker image ls
+            docker ps -a          
       - run:
           name: Build docker container
           command: |
