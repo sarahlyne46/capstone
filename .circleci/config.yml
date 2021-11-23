@@ -1,3 +1,7 @@
+# used the following site for guidance
+# https://circleci.com/developer/orbs/orb/circleci/aws-eks#usage-create-eks-cluster
+
+
 version: 2.1
 
 orbs:
@@ -191,7 +195,8 @@ jobs:
             kubectl get nodes
             kubectl get deployment
             
- 
+
+           
 workflows:
   default:
     jobs:
@@ -210,6 +215,13 @@ workflows:
        - test-deployment:
            cluster-name: capstone-project
            requires: [deploy-code]
+       - aws-eks/update-container-image:
+           cluster-name: capstone-project
+           container-image-updates: 'capstone-project-deployment=sarahlyne46/capstone-project:capstone'
+           get-rollout-status: true
+           record: true
+           requires: [test-deployment]
+           resource-name: deployment/capstone-project-deployment                  
 #      - aws-eks/delete-cluster:
 #          cluster-name: sarah-2211
 #          requires:
