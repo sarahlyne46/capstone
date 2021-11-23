@@ -10,7 +10,7 @@ def index():
     <meta charset="utf-8">
     <title>Sarah Lyne Capstone</title>
     <style>
-    body{background-color: lightblue; font-family:  verdana; color: purple;}
+    body{background-color: lightgreen; font-family:  verdana; color: darkgreen;}
 	</style>
     </head>
     <body>
@@ -23,8 +23,3 @@ def index():
     
     
 app.run(host="0.0.0.0", port=8080, debug=True)
-
-
-
-
-
