@@ -18,10 +18,9 @@ parameters:
   KEY_PAIR:
     type: string
     default: "capstone"
-  IMAGE_NAME:
+  COLOuR:
     type: string
-    default: "sarahlyne46/capstone-project:blue"
-
+    default: "blue"
     
     
             
@@ -81,13 +80,13 @@ jobs:
       - run:
           name: Build docker container
           command: |
-          
-            docker build -t $IMAGE_NAME .
+            echo "Creating £COLOUR build"
+            docker build -t sarahlyne46/capstone-project:blue .
             docker image ls
       - run:
           name: Test docker container
           command: |
-            docker run -d --rm --name testapp -p 8081:8080 $IMAGE_NAME
+            docker run -d --rm --name testapp -p 8081:8080 sarahlyne46/capstone-project:blue
             sleep 5
             docker container ls
             docker stop testapp
@@ -95,7 +94,7 @@ jobs:
           name: Upload docker container
           command: |
             docker login -u="$DOCKERHUB_USERNAME" -p="$DOCKERHUB_PASSWORD"
-            docker push $IMAGE_NAME
+            docker push sarahlyne46/capstone-project:blue
             
   create-infrastructure:
     executor: aws-eks/python3
@@ -211,7 +210,7 @@ workflows:
            requires: [deploy-code]
        - aws-eks/update-container-image:
            cluster-name: capstone-project
-           container-image-updates: 'capstone-project-deployment=sarahlyne46/capstone-project:v3'
+           container-image-updates: 'capstone-project-deployment=sarahlyne46/capstone-project:blue'
            get-rollout-status: true
            requires: [test-deployment]
            resource-name: deployment/capstone-project-deployment                  
