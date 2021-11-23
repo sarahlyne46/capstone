@@ -78,7 +78,7 @@ jobs:
       - run:
           name: Build docker container
           command: |
-            echo "Creating GREEN build"
+            echo "Creating BLUE build"
             docker build -t sarahlyne46/capstone-project:bluev3 .
             docker image ls
       - run:
