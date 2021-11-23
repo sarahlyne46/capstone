@@ -78,8 +78,8 @@ jobs:
       - run:          
           name: Remove old docker container
           command: |
-            echo docker container >> $container_name
-            docker rm -f $container_name
+            echo docker container 
+            docker rm -f container
       - run:
           name: Build docker container
           command: |
