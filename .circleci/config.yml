@@ -75,10 +75,11 @@ jobs:
       
       - setup_remote_docker:
           version: 19.03.13
-      - run:
+      - run:          
           name: Remove old docker container
           command: |
-            docker rm -f capstone
+            echo docker container >> $container_name
+            docker rm -f $container_name
       - run:
           name: Build docker container
           command: |
@@ -92,11 +93,6 @@ jobs:
             sleep 5
             docker container ls
             docker stop testapp
-      - run:
-          name: Remove old docker container
-          command: |
-            echo $DOCKER_IMAGE_NAME
-            docker rm -f $DOCKER_IMAGE_NAME
       - run:           
           name: Upload docker container
           command: |
