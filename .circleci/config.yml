@@ -79,12 +79,12 @@ jobs:
           name: Build docker container
           command: |
             echo "Creating GREEN build"
-            docker build -t sarahlyne46/capstone-project:greenv2 .
+            docker build -t sarahlyne46/capstone-project:bluev3 .
             docker image ls
       - run:
           name: Test docker container
           command: |
-            docker run -d --rm --name testapp -p 8081:8080 sarahlyne46/capstone-project:greenv2
+            docker run -d --rm --name testapp -p 8081:8080 sarahlyne46/capstone-project:bluev3
             sleep 5
             docker container ls
             docker stop testapp
@@ -92,7 +92,7 @@ jobs:
           name: Upload docker container
           command: |
             docker login -u="$DOCKERHUB_USERNAME" -p="$DOCKERHUB_PASSWORD"
-            docker push sarahlyne46/capstone-project:greenv2
+            docker push sarahlyne46/capstone-project:bluev3
             
   create-infrastructure:
     executor: aws-eks/python3
@@ -208,7 +208,7 @@ workflows:
            requires: [deploy-code]
        - aws-eks/update-container-image:
            cluster-name: capstone-project
-           container-image-updates: 'capstone-project-deployment=sarahlyne46/capstone-project:greenv2'
+           container-image-updates: 'capstone-project-deployment=sarahlyne46/capstone-project:bluev3'
            get-rollout-status: true
            requires: [test-deployment]
            resource-name: deployment/capstone-project-deployment                  
