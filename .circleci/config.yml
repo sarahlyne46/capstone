@@ -75,14 +75,6 @@ jobs:
       
       - setup_remote_docker:
           version: 19.03.13
-      - run:          
-          name: Remove old docker container
-          command: |
-            docker container ls
-            cat ~/container.txt
-            docker container ls > ~/container.txt
-            cat ~/container.txt
-            docker rm -f ~/container.txt
       - run:
           name: Build docker container
           command: |
