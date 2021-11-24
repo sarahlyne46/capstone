@@ -229,9 +229,9 @@ workflows:
 #           cluster-name: capstone-project
 #           requires: [upload-docker]
        - check-cluster:
-           cluster-name: capstone-project
+           cluster-name: capstone-test2211-cluster
        - delete-infrastructure:
-           cluster-name: capstone-project     
+           cluster-name: capstone-test2211-cluster    
            requires: [check-cluster]
 #       - deploy-code:
 #           cluster-name: capstone-project
