@@ -132,7 +132,38 @@ jobs:
           ssh-access: false
           ssh-public-key: ''         
             
-            
+  delete-infrastructure:
+    executor: aws-eks/python3
+    parameters:
+      cluster-name:
+        description: | 
+          Name of the EKS cluster
+        type: string
+
+    steps:
+      - checkout
+      
+      - aws-eks/install-aws-iam-authenticator:
+          release-tag: ''
+      - run:
+          name: Install the eksctl tool
+          command: |
+            if which eksctl > /dev/null; then
+            echo "eksctl is already installed"
+            exit 0
+            fi
+            mkdir -p eksctl_download
+            curl --location --retry 5 "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C eksctl_download
+            chmod +x eksctl_download/eksctl
+            SUDO=""
+            if [ $(id -u) -ne 0 ] && which sudo > /dev/null ; then
+            SUDO="sudo"
+            fi
+            $SUDO mv eksctl_download/eksctl /usr/local/bin/
+            rmdir eksctl_download
+      - aws-eks/delete-cluster:
+          cluster-name: << parameters.cluster-name >>   
+          
   check-cluster:
     executor: aws-eks/python3
     parameters:
@@ -191,7 +222,7 @@ jobs:
 workflows:
   default:
     jobs:
-       - lint
+#       - lint
 #       - upload-docker:
 #           requires: [lint]
 #       - create-infrastructure:
@@ -199,6 +230,9 @@ workflows:
 #           requires: [upload-docker]
        - check-cluster:
            cluster-name: capstone-project
+       - delete-infrastructure:
+           cluster-name: capstone-project     
+           requires: [check-cluster]
 #       - deploy-code:
 #           cluster-name: capstone-project
 #           requires: [check-cluster]
@@ -211,5 +245,5 @@ workflows:
 #           get-rollout-status: true
 #           requires: [test-deployment]
 #           resource-name: deployment/capstone-project-deployment                  
-       - aws-eks/delete-cluster:
-          cluster-name: capstone-project
+#       - aws-eks/delete-cluster:
+#          cluster-name: capstone-project
