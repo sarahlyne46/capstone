@@ -15,8 +15,6 @@ def index():
     </head>
     <body>
     <h1>Hello World!</h1>
-    <h2>My name is Sarah Lyne</h2>
-    <p> This is my blue deployment for the Capstone Project</p>
     </body>
     </html>
     """
