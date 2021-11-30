@@ -8,15 +8,13 @@ def index():
     <html lang="en">
     <head>
     <meta charset="utf-8">
-    <title>Sarah Lyne Capstone</title>
+    <title>Hello World Page</title>
     <style>
-    body{background-color: lightblue; font-family:  verdana; color: purple;}
+    body{background-color: lightblue; font-family: verdana; color: darkblue;}
 	</style>
     </head>
     <body>
     <h1>Hello World!</h1>
-    <h2>My name is Sarah Lyne</h2>
-    <p> This is my blue deployment for the Capstone Project</p>
     </body>
     </html>
     """
