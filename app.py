@@ -8,10 +8,7 @@ def index():
     <html lang="en">
     <head>
     <meta charset="utf-8">
-    <title>Sarah Lyne Capstone</title>
-    <style>
-    body{background-color: lightblue; font-family:  verdana; color: purple;}
-	</style>
+    <title>Hello World Page</title>
     </head>
     <body>
     <h1>Hello World!</h1>
