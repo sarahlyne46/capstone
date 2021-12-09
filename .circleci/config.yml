@@ -7,8 +7,7 @@ version: 2.1
 orbs:
   aws-cli: circleci/aws-cli@2.0.3
   aws-eks: circleci/aws-eks@0.2.3
-  kubernetes: circleci/kubernetes@0.12.0  
-#  slack: circleci/slack@4.2.1https://github.com/sarahlyne46/capstone/tree/sarahlyne46-cap1-ubuntu
+  kubernetes: circleci/kubernetes@0.12.0
 
 parameters:
 
