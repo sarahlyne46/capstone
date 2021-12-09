@@ -221,17 +221,17 @@ jobs:
 workflows:
   default:
     jobs:
-#       - lint
+       - lint
 #       - upload-docker:
 #           requires: [lint]
 #       - create-infrastructure:
 #           cluster-name: capstone-project
 #           requires: [upload-docker]
-       - check-cluster:
-           cluster-name: capstone-test2211-cluster
-       - delete-infrastructure:
-           cluster-name: capstone-test2211-cluster    
-           requires: [check-cluster]
+#       - check-cluster:
+#           cluster-name: capstone-test2211-cluster
+#       - delete-infrastructure:
+#           cluster-name: capstone-test2211-cluster    
+#           requires: [check-cluster]
 #       - deploy-code:
 #           cluster-name: capstone-project
 #           requires: [check-cluster]
