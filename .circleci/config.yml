@@ -42,3 +42,9 @@ jobs:
           paths:
             - ./venv
           key: v1-dependencies-{{ checksum "requirements.txt" }}
+
+workflows:
+  default:
+    jobs:
+      - make-lint
+        
