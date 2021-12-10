@@ -2,7 +2,7 @@
 # https://circleci.com/developer/orbs/orb/circleci/aws-eks#usage-create-eks-cluster
 
 
-version: 2
+version: 2.1
 
 jobs:
   make-lint:
