@@ -18,7 +18,7 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "requirements.txt" }}
             # fallback to using the latest cache if no exact match is found
-            - v1-dependencies
+            - v1-dependencies-
       
       - run:
           name: Setting Up Virtual Environment
@@ -31,7 +31,6 @@ jobs:
           name: Installing hadolint & Pylint
           command: |  
             wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64 && chmod +x /bin/hadolint
-            pip install pylint
       
       - run:
           name: run lint 
